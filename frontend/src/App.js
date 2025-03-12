@@ -12,7 +12,12 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 
-// Add this Bitcoin logo SVG component
+const API_BASE_URL = 'http://localhost:5000/api';
+
+// Default transaction size (average Bitcoin transaction is ~250 bytes)
+const DEFAULT_TX_SIZE = 250;
+
+// Enhanced Bitcoin logo
 const BitcoinLogo = () => (
   <svg className="bitcoin-logo bitcoin-float" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
     <path fill="#f2a900" d="M63.04 39.74c-4.27 17.14-21.68 27.74-38.82 23.47C7.08 58.94-3.5 41.53.76 24.4 5.04 7.25 22.45-3.34 39.58.93c17.14 4.27 27.73 21.68 23.46 38.81z"/>
@@ -20,10 +25,8 @@ const BitcoinLogo = () => (
   </svg>
 );
 
-const API_BASE_URL = 'http://localhost:5000/api';
-
 function App() {
-  const [transactionSize, setTransactionSize] = useState('');
+  const [transactionSize, setTransactionSize] = useState(DEFAULT_TX_SIZE.toString());
   const [fees, setFees] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -31,6 +34,8 @@ function App() {
 
   useEffect(() => {
     fetchNetworkStatus();
+    // Calculate fees on initial load with default transaction size
+    calculateFees();
   }, []);
 
   const fetchNetworkStatus = async () => {
@@ -64,117 +69,142 @@ function App() {
     setTransactionSize(event.target.value);
     if (event.target.value) {
       calculateFees();
+    } else {
+      setFees(null);
     }
   };
 
   return (
-    <Container maxWidth="md">
+    <>
+      <div className="bg-pattern"></div>
       <BitcoinLogo />
-      <Box sx={{ my: 4 }} className="app-header">
-        <Typography variant="h3" component="h1" gutterBottom align="center">
-          Bitcoin Fee Estimator
-        </Typography>
-
-        {/* Your existing code with added classNames */}
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-
-        <Card sx={{ mb: 4 }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Network Status
+      <Container maxWidth="md">
+        <Box sx={{ my: 4 }}>
+          {/* Enhanced title section */}
+          <div className="app-title">
+            <Typography variant="h3" component="h1">
+              Bitcoin Fee Estimator
             </Typography>
-            {networkStatus ? (
-              <Grid container spacing={2}>
-                <Grid item xs={4}>
-                  <div className="fee-display fee-fast">
-                    <Typography variant="body2" color="text.secondary">
-                      Fast Fee
-                    </Typography>
-                    <Typography variant="h6" className="fee-value">
-                      {networkStatus.fastestFee} sats/vB
-                    </Typography>
-                  </div>
-                </Grid>
-                <Grid item xs={4}>
-                  <div className="fee-display fee-medium">
-                    <Typography variant="body2" color="text.secondary">
-                      Medium Fee
-                    </Typography>
-                    <Typography variant="h6" className="fee-value">
-                      {networkStatus.halfHourFee} sats/vB
-                    </Typography>
-                  </div>
-                </Grid>
-                <Grid item xs={4}>
-                  <div className="fee-display fee-slow">
-                    <Typography variant="body2" color="text.secondary">
-                      Slow Fee
-                    </Typography>
-                    <Typography variant="h6" className="fee-value">
-                      {networkStatus.hourFee} sats/vB
-                    </Typography>
-                  </div>
-                </Grid>
-              </Grid>
-            ) : (
-              <CircularProgress size={24} />
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Calculate Transaction Fee
+            <Typography className="subtitle">
+              Calculate transaction costs in real-time
             </Typography>
-            <TextField
-              fullWidth
-              label="Transaction Size (bytes)"
-              type="number"
-              value={transactionSize}
-              onChange={handleSizeChange}
-              sx={{ mb: 2 }}
-            />
+          </div>
 
-            {loading ? (
-              <CircularProgress />
-            ) : fees ? (
-              <Grid container spacing={2}>
-                <Grid item xs={4}>
-                  <div className="fee-display fee-fast">
-                    <Typography variant="body2" color="text.secondary">
-                      Fast (10 min)
-                    </Typography>
-                    <Typography variant="h6" className="fee-value">{fees.fast} BTC</Typography>
-                  </div>
+          {error && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {error}
+            </Alert>
+          )}
+
+          <Card sx={{ mb: 4 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Network Status
+              </Typography>
+              {networkStatus ? (
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={4}>
+                    <div className="fee-display fee-fast">
+                      <Typography className="fee-label">
+                        Fast Fee
+                      </Typography>
+                      <Typography variant="h6" className="fee-value">
+                        {networkStatus.fastestFee} sats/vB
+                      </Typography>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <div className="fee-display fee-medium">
+                      <Typography className="fee-label">
+                        Medium Fee
+                      </Typography>
+                      <Typography variant="h6" className="fee-value">
+                        {networkStatus.halfHourFee} sats/vB
+                      </Typography>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <div className="fee-display fee-slow">
+                      <Typography className="fee-label">
+                        Slow Fee
+                      </Typography>
+                      <Typography variant="h6" className="fee-value">
+                        {networkStatus.hourFee} sats/vB
+                      </Typography>
+                    </div>
+                  </Grid>
                 </Grid>
-                <Grid item xs={4}>
-                  <div className="fee-display fee-medium">
-                    <Typography variant="body2" color="text.secondary">
-                      Medium (30 min)
-                    </Typography>
-                    <Typography variant="h6" className="fee-value">{fees.medium} BTC</Typography>
-                  </div>
+              ) : (
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+                  <CircularProgress size={32} />
+                </Box>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Calculate Transaction Fee
+              </Typography>
+              <TextField
+                fullWidth
+                label="Transaction Size (bytes)"
+                type="number"
+                value={transactionSize}
+                onChange={handleSizeChange}
+                helperText="Average Bitcoin transaction is ~250 bytes"
+                InputProps={{
+                  inputProps: { 
+                    min: 0,
+                    step: 1
+                  }
+                }}
+              />
+
+              {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+                  <CircularProgress size={32} />
+                </Box>
+              ) : fees ? (
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={4}>
+                    <div className="fee-display fee-fast">
+                      <Typography className="fee-label">
+                        Fast (10 min)
+                      </Typography>
+                      <Typography variant="h6" className="fee-value">{fees.fast} BTC</Typography>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <div className="fee-display fee-medium">
+                      <Typography className="fee-label">
+                        Medium (30 min)
+                      </Typography>
+                      <Typography variant="h6" className="fee-value">{fees.medium} BTC</Typography>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <div className="fee-display fee-slow">
+                      <Typography className="fee-label">
+                        Slow (1+ hour)
+                      </Typography>
+                      <Typography variant="h6" className="fee-value">{fees.slow} BTC</Typography>
+                    </div>
+                  </Grid>
                 </Grid>
-                <Grid item xs={4}>
-                  <div className="fee-display fee-slow">
-                    <Typography variant="body2" color="text.secondary">
-                      Slow (1+ hour)
-                    </Typography>
-                    <Typography variant="h6" className="fee-value">{fees.slow} BTC</Typography>
-                  </div>
-                </Grid>
-              </Grid>
-            ) : null}
-          </CardContent>
-        </Card>
-      </Box>
-    </Container>
+              ) : null}
+            </CardContent>
+          </Card>
+
+          {/* Added footer */}
+          <div className="footer">
+            <p>Data provided by mempool.space API • Stay Sovereign</p>
+          </div>
+        </Box>
+      </Container>
+    </>
   );
 }
 
-export default App; 
+export default App;
