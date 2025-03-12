@@ -6,6 +6,7 @@ import { NetworkStatus } from './components/NetworkStatus';
 import { MempoolStats } from './components/MempoolStats';
 import { BlockchainInfo } from './components/BlockchainInfo';
 import { FeeCalculator } from './components/FeeCalculator';
+import { HashratePower } from './components/HashratePower';
 import { Footer } from './components/Footer';
 import { useNetworkStatus } from './hooks/useNetworkStatus';
 import { useMempoolStats } from './hooks/useMempoolStats';
@@ -166,8 +167,23 @@ function App() {
     <>
       <div className="bg-pattern"></div>
       <BitcoinLogo />
-      <Container maxWidth="lg">
-        <Box sx={{ my: 4 }}>
+      <Container 
+        maxWidth="xl" 
+        sx={{ 
+          px: { 
+            xs: 2,    // 16px padding on mobile
+            sm: 3,    // 24px padding on tablet
+            md: 4,    // 32px padding on desktop
+            lg: 6,    // 48px padding on large screens
+            xl: 8     // 64px padding on extra large screens
+          }
+        }}
+      >
+        <Box sx={{ 
+          my: 4,
+          maxWidth: '2000px', // Set a reasonable max-width for ultra-wide screens
+          mx: 'auto'          // Center the content
+        }}>
           <div className="app-title">
             <Typography variant="h1" component="h1">
               Bitcoin Fee Estimator
@@ -183,21 +199,26 @@ function App() {
             </Alert>
           )}
 
-          <NetworkStatus 
-            networkStatus={networkStatus}
-            feeHistory={feeHistory}
-          />
-
-          <Box sx={{ mb: 4 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <MempoolStats mempoolStats={mempoolStats} />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <BlockchainInfo blockchainInfo={blockchainInfo} />
-              </Grid>
+          <Grid container spacing={4} sx={{ mb: 4 }}>
+            <Grid item xs={12} lg={6}>
+              <NetworkStatus 
+                networkStatus={networkStatus}
+                feeHistory={feeHistory}
+              />
             </Grid>
-          </Box>
+            <Grid item xs={12} lg={6}>
+              <HashratePower />
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={4} sx={{ mb: 4 }}>
+            <Grid item xs={12} md={6}>
+              <MempoolStats mempoolStats={mempoolStats} />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <BlockchainInfo blockchainInfo={blockchainInfo} />
+            </Grid>
+          </Grid>
 
           <FeeCalculator
             transactionSize={transactionSize}
