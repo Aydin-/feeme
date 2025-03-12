@@ -34,6 +34,15 @@ export const WALLET_CONFIGS = {
       medium: parseFloat(networkFees.medium),
       slow: parseFloat(networkFees.slow)
     })
+  },
+  coinbase: {
+    name: "Coinbase Wallet",
+    description: "Popular exchange-linked self-custody wallet",
+    feeCalculation: (networkFees) => ({
+      fast: parseFloat(networkFees.fast) * 1.12, // Coinbase adds ~12% margin for fast
+      medium: parseFloat(networkFees.medium) * 1.08, // 8% for medium
+      slow: parseFloat(networkFees.slow) * 1.04 // 4% for slow
+    })
   }
 };
 
@@ -47,6 +56,8 @@ export const getWalletAdjustmentText = (wallet) => {
       return "Exodus adds 15% to fast fees, 10% to medium fees, and 5% to slow fees for higher reliability";
     case 'mempool':
       return "Direct network fee estimates without adjustments";
+    case 'coinbase':
+      return "Coinbase Wallet adds 12% to fast fees, 8% to medium fees, and 4% to slow fees for reliable transactions";
     default:
       return "";
   }

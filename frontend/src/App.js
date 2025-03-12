@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Box, Typography, Alert, Grid } from '@mui/material';
 import axios from 'axios';
-import { BitcoinLogo } from './icons';
 import { NetworkStatus } from './components/NetworkStatus';
 import { MempoolStats } from './components/MempoolStats';
 import { BlockchainInfo } from './components/BlockchainInfo';
 import { FeeCalculator } from './components/FeeCalculator';
 import { HashratePower } from './components/HashratePower';
 import { Footer } from './components/Footer';
+import { Header } from './components/Header';
 import { useNetworkStatus } from './hooks/useNetworkStatus';
 import { useMempoolStats } from './hooks/useMempoolStats';
 import { useBlockchainInfo } from './hooks/useBlockchainInfo';
@@ -166,7 +166,7 @@ function App() {
   return (
     <>
       <div className="bg-pattern"></div>
-      <BitcoinLogo />
+      <Header />
       <Container 
         maxWidth="xl" 
         sx={{ 
@@ -180,19 +180,9 @@ function App() {
         }}
       >
         <Box sx={{ 
-          my: 4,
           maxWidth: '2000px', // Set a reasonable max-width for ultra-wide screens
           mx: 'auto'          // Center the content
         }}>
-          <div className="app-title">
-            <Typography variant="h1" component="h1">
-              Bitcoin Fee Estimator
-            </Typography>
-            <Typography className="subtitle">
-              Real-time Transaction Cost Calculator
-            </Typography>
-          </div>
-
           {error && (
             <Alert severity="error" sx={{ mb: 3 }}>
               {error}
