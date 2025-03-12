@@ -42,10 +42,13 @@ app.post('/api/calculate-fee', async (req, res) => {
     const feesResponse = await axios.get('https://mempool.space/api/v1/fees/recommended');
     const { fastestFee, halfHourFee, hourFee } = feesResponse.data;
 
+    // Correct conversion: 1 BTC = 100,000,000 satoshis
+    // size * fee rate (sats/vB) = total satoshis
+    // total satoshis / 100,000,000 = BTC
     const fees = {
-      fast: Math.ceil((size * fastestFee) / 1000), // Convert to BTC
-      medium: Math.ceil((size * halfHourFee) / 1000),
-      slow: Math.ceil((size * hourFee) / 1000)
+      fast: ((size * fastestFee) / 100000000).toFixed(8),
+      medium: ((size * halfHourFee) / 100000000).toFixed(8),
+      slow: ((size * hourFee) / 100000000).toFixed(8)
     };
 
     res.json(fees);

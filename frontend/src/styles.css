@@ -1,0 +1,147 @@
+/* Bitcoin Fee Estimator Custom Styles */
+
+:root {
+    --bitcoin-gold: #f2a900;
+    --bitcoin-orange: #ff9900;
+    --dark-bg: #121212;
+    --darker-bg: #090909;
+    --card-bg: #1e1e1e;
+    --card-hover: #252525;
+    --success-green: #00c853;
+    --warning-yellow: #ffd600;
+    --error-red: #ff3d00;
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+  }
+  
+  body {
+    background: var(--dark-bg);
+    background-image: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+    min-height: 100vh;
+    color: var(--text-primary);
+  }
+  
+  /* Bitcoin logo animation */
+  .bitcoin-logo {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    opacity: 0.15;
+    width: 50px;
+    height: 50px;
+    z-index: -1;
+  }
+  
+  /* Custom header styling */
+  .app-header h1 {
+    background: linear-gradient(90deg, var(--bitcoin-gold), var(--bitcoin-orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  /* Card enhancements */
+  .MuiCard-root {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .MuiCard-root:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.5);
+    background-color: var(--card-hover);
+  }
+  
+  /* Card header styling */
+  .MuiCardContent-root h6 {
+    color: var(--bitcoin-gold);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(242, 169, 0, 0.2);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+  }
+  
+  /* Fee display styling */
+  .fee-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+  
+  .fee-display:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .fee-fast {
+    border-left: 3px solid var(--success-green);
+  }
+  
+  .fee-medium {
+    border-left: 3px solid var(--warning-yellow);
+  }
+  
+  .fee-slow {
+    border-left: 3px solid var(--error-red);
+  }
+  
+  .fee-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+  
+  /* Input field styling */
+  .MuiTextField-root .MuiOutlinedInput-root {
+    border-radius: 8px;
+  }
+  
+  .MuiTextField-root .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: var(--bitcoin-gold);
+    border-width: 2px;
+  }
+  
+  .MuiTextField-root .MuiInputLabel-root.Mui-focused {
+    color: var(--bitcoin-gold);
+  }
+  
+  /* Loading animation */
+  .MuiCircularProgress-root {
+    color: var(--bitcoin-gold);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .MuiContainer-root {
+      padding: 16px;
+    }
+    
+    .app-header h1 {
+      font-size: 1.75rem;
+    }
+    
+    .fee-display {
+      padding: 8px 4px;
+    }
+  }
+  
+  /* Bitcoin animation effect */
+  @keyframes float {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+  }
+  
+  .bitcoin-float {
+    animation: float 6s ease-in-out infinite;
+  }
