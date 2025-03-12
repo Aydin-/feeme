@@ -116,11 +116,11 @@ function App() {
         <Box sx={{ my: 4 }}>
           {/* Enhanced title section */}
           <div className="app-title">
-            <Typography variant="h3" component="h1">
+            <Typography variant="h1" component="h1">
               Bitcoin Fee Estimator
             </Typography>
             <Typography className="subtitle">
-              Calculate transaction costs in real-time
+              Real-time Transaction Cost Calculator
             </Typography>
           </div>
 
@@ -130,7 +130,7 @@ function App() {
             </Alert>
           )}
 
-          <Card sx={{ mb: 4 }}>
+          <Card className="glass-card" sx={{ mb: 4 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Network Status
@@ -176,7 +176,7 @@ function App() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="glass-card">
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Calculate Transaction Fee
@@ -194,6 +194,7 @@ function App() {
                     step: 1
                   }
                 }}
+                sx={{ mb: 3 }}
               />
 
               {loading ? (
@@ -201,40 +202,48 @@ function App() {
                   <CircularProgress size={32} />
                 </Box>
               ) : fees ? (
-                <Grid container spacing={2}>
-                  <Grid item xs={4}>
-                    <Typography variant="body2" color="text.secondary">
-                      Fast (10 min)
-                    </Typography>
-                    <Typography variant="h6">{fees.fast} BTC</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      ≈ {convertBtcToNok(fees.fast)} NOK
-                    </Typography>
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={4}>
+                    <div className="fee-display fee-fast">
+                      <Typography variant="body2" color="text.secondary">
+                        Fast (10 min)
+                      </Typography>
+                      <Typography variant="h6">{fees.fast} BTC</Typography>
+                      <div className="currency-conversion">
+                        <span className="amount">{convertBtcToNok(fees.fast)}</span>
+                        <span className="currency">NOK</span>
+                      </div>
+                    </div>
                   </Grid>
-                  <Grid item xs={4}>
-                    <Typography variant="body2" color="text.secondary">
-                      Medium (30 min)
-                    </Typography>
-                    <Typography variant="h6">{fees.medium} BTC</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      ≈ {convertBtcToNok(fees.medium)} NOK
-                    </Typography>
+                  <Grid item xs={12} sm={4}>
+                    <div className="fee-display fee-medium">
+                      <Typography variant="body2" color="text.secondary">
+                        Medium (30 min)
+                      </Typography>
+                      <Typography variant="h6">{fees.medium} BTC</Typography>
+                      <div className="currency-conversion">
+                        <span className="amount">{convertBtcToNok(fees.medium)}</span>
+                        <span className="currency">NOK</span>
+                      </div>
+                    </div>
                   </Grid>
-                  <Grid item xs={4}>
-                    <Typography variant="body2" color="text.secondary">
-                      Slow (1+ hour)
-                    </Typography>
-                    <Typography variant="h6">{fees.slow} BTC</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      ≈ {convertBtcToNok(fees.slow)} NOK
-                    </Typography>
+                  <Grid item xs={12} sm={4}>
+                    <div className="fee-display fee-slow">
+                      <Typography variant="body2" color="text.secondary">
+                        Slow (1+ hour)
+                      </Typography>
+                      <Typography variant="h6">{fees.slow} BTC</Typography>
+                      <div className="currency-conversion">
+                        <span className="amount">{convertBtcToNok(fees.slow)}</span>
+                        <span className="currency">NOK</span>
+                      </div>
+                    </div>
                   </Grid>
                 </Grid>
               ) : null}
             </CardContent>
           </Card>
 
-          {/* Added footer */}
           <div className="footer">
             <p>Data provided by mempool.space API • Stay Sovereign</p>
           </div>
