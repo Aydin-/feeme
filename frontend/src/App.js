@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://feeme.onrender.com/api';
 
 // Default transaction size (average Bitcoin transaction is ~250 bytes)
 const DEFAULT_TX_SIZE = 250;
