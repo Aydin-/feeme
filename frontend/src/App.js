@@ -68,6 +68,46 @@ const LinkedInIcon = () => (
   </svg>
 );
 
+// Add after the existing constants
+const WALLET_CONFIGS = {
+  electrum: {
+    name: "Electrum",
+    description: "Desktop wallet with advanced fee controls",
+    feeCalculation: (networkFees) => ({
+      fast: parseFloat(networkFees.fast) * 1.1, // Electrum adds ~10% margin
+      medium: parseFloat(networkFees.medium),
+      slow: parseFloat(networkFees.slow) * 0.9 // Electrum allows lower fees for patient users
+    })
+  },
+  bluewallet: {
+    name: "BlueWallet",
+    description: "Mobile wallet with Lightning support",
+    feeCalculation: (networkFees) => ({
+      fast: parseFloat(networkFees.fast) * 1.05, // BlueWallet adds ~5% margin
+      medium: parseFloat(networkFees.medium) * 1.02,
+      slow: parseFloat(networkFees.slow)
+    })
+  },
+  exodus: {
+    name: "Exodus",
+    description: "User-friendly desktop & mobile wallet",
+    feeCalculation: (networkFees) => ({
+      fast: parseFloat(networkFees.fast) * 1.15, // Exodus adds higher margins for reliability
+      medium: parseFloat(networkFees.medium) * 1.1,
+      slow: parseFloat(networkFees.slow) * 1.05
+    })
+  },
+  mempool: {
+    name: "Mempool Estimate",
+    description: "Direct network fee estimates",
+    feeCalculation: (networkFees) => ({
+      fast: parseFloat(networkFees.fast),
+      medium: parseFloat(networkFees.medium),
+      slow: parseFloat(networkFees.slow)
+    })
+  }
+};
+
 function App() {
   const [transactionSize, setTransactionSize] = useState(DEFAULT_TX_SIZE.toString());
   const [fees, setFees] = useState(null);
@@ -101,6 +141,9 @@ function App() {
   
   const updateTimerRef = useRef(null);
 
+  // Add new state for selected wallet
+  const [selectedWallet, setSelectedWallet] = useState('mempool');
+
   useEffect(() => {
     // Initial fetches for all data
     fetchNetworkStatus();
@@ -111,12 +154,10 @@ function App() {
     // Set up auto-update interval for network status only
     updateTimerRef.current = setInterval(() => {
       fetchNetworkStatus();
-      calculateFees();
     }, UPDATE_INTERVAL);
 
     // Set up a separate interval for background updates of mempool and blockchain info
     const backgroundTimer = setInterval(() => {
-      // Use state updater functions to avoid UI flashing
       fetchMempoolStats().then(() => {
         // Optional: Add any smooth transition logic here
       });
@@ -196,10 +237,80 @@ function App() {
     try {
       const response = await axios.post(`${API_BASE_URL}/calculate-fee`, {
         size: parseInt(transactionSize),
+        wallet: selectedWallet
       });
-      setFees(response.data);
+      
+      console.log('Raw API Response:', response.data);
+      
+      // Validate response data
+      if (!response.data || typeof response.data.fast === 'undefined' || 
+          typeof response.data.medium === 'undefined' || 
+          typeof response.data.slow === 'undefined') {
+        console.error('Invalid fee data structure:', response.data);
+        throw new Error('Invalid fee data received from API');
+      }
+
+      // Convert string values to numbers first
+      const networkFees = {
+        fast: parseFloat(response.data.fast),
+        medium: parseFloat(response.data.medium),
+        slow: parseFloat(response.data.slow)
+      };
+
+      console.log('Parsed Network Fees:', networkFees);
+
+      // Apply wallet-specific fee calculation with validation
+      const walletConfig = WALLET_CONFIGS[selectedWallet];
+      if (!walletConfig) {
+        throw new Error('Invalid wallet selected');
+      }
+
+      const walletFees = walletConfig.feeCalculation(networkFees);
+      console.log('Calculated Wallet Fees:', walletFees);
+
+      // Validate calculated fees
+      if (isNaN(walletFees.fast) || isNaN(walletFees.medium) || isNaN(walletFees.slow)) {
+        console.error('Invalid wallet fees:', walletFees);
+        throw new Error('Fee calculation resulted in NaN');
+      }
+
+      // Ensure we're working with numbers
+      const finalFees = {
+        fast: Number(walletFees.fast).toFixed(8),
+        medium: Number(walletFees.medium).toFixed(8),
+        slow: Number(walletFees.slow).toFixed(8)
+      };
+
+      console.log('Final Fees:', finalFees);
+
+      // Additional validation
+      if (Object.values(finalFees).some(fee => isNaN(parseFloat(fee)))) {
+        throw new Error('Final fee calculation resulted in NaN');
+      }
+
+      // Verify that wallet fees are higher than mempool estimates when they should be
+      if (selectedWallet !== 'mempool') {
+        console.log('Comparing fees with mempool estimates:', {
+          fast: {
+            wallet: parseFloat(finalFees.fast),
+            mempool: parseFloat(networkFees.fast)
+          },
+          medium: {
+            wallet: parseFloat(finalFees.medium),
+            mempool: parseFloat(networkFees.medium)
+          },
+          slow: {
+            wallet: parseFloat(finalFees.slow),
+            mempool: parseFloat(networkFees.slow)
+          }
+        });
+      }
+
+      setFees(finalFees);
     } catch (err) {
-      setError('Failed to calculate fees');
+      console.error('Fee calculation error:', err);
+      setError(`Failed to calculate fees: ${err.message}`);
+      setFees(null);
     } finally {
       setLoading(false);
     }
@@ -211,6 +322,14 @@ function App() {
       calculateFees();
     } else {
       setFees(null);
+    }
+  };
+
+  // Add after handleSizeChange
+  const handleWalletChange = (event) => {
+    setSelectedWallet(event.target.value);
+    if (transactionSize) {
+      calculateFees();
     }
   };
 
@@ -382,6 +501,22 @@ function App() {
     if (hashrate === 0) return '0 H/s';
     const i = parseInt(Math.floor(Math.log(hashrate) / Math.log(1000)));
     return Math.round(hashrate / Math.pow(1000, i), 2) + ' ' + sizes[i];
+  };
+
+  // Add wallet description text based on selected wallet
+  const getWalletAdjustmentText = (wallet) => {
+    switch(wallet) {
+      case 'electrum':
+        return "Electrum adds 10% to fast fees and reduces slow fees by 10% for patient users";
+      case 'bluewallet':
+        return "BlueWallet adds 5% to fast fees and 2% to medium fees";
+      case 'exodus':
+        return "Exodus adds 15% to fast fees, 10% to medium fees, and 5% to slow fees for higher reliability";
+      case 'mempool':
+        return "Direct network fee estimates without adjustments";
+      default:
+        return "";
+    }
   };
 
   return (
@@ -562,6 +697,48 @@ function App() {
               <Typography variant="h6" gutterBottom>
                 Calculate Transaction Fee
               </Typography>
+              
+              {/* Add wallet selector */}
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="subtitle2" gutterBottom>
+                  Select Wallet
+                </Typography>
+                <Grid container spacing={2}>
+                  {Object.entries(WALLET_CONFIGS).map(([key, wallet]) => (
+                    <Grid item xs={12} sm={6} md={3} key={key}>
+                      <Card 
+                        className={`wallet-card ${selectedWallet === key ? 'selected' : ''}`}
+                        onClick={() => {
+                          setSelectedWallet(key);
+                          if (transactionSize) calculateFees();
+                        }}
+                        sx={{
+                          cursor: 'pointer',
+                          p: 2,
+                          bgcolor: selectedWallet === key ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                          '&:hover': {
+                            bgcolor: 'rgba(255, 255, 255, 0.05)'
+                          }
+                        }}
+                      >
+                        <Typography variant="subtitle1">{wallet.name}</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {wallet.description}
+                        </Typography>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+                {/* Add wallet adjustment explanation */}
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary" 
+                  sx={{ mt: 2, textAlign: 'center' }}
+                >
+                  {getWalletAdjustmentText(selectedWallet)}
+                </Typography>
+              </Box>
+
               <TextField
                 fullWidth
                 label="Transaction Size (bytes)"
