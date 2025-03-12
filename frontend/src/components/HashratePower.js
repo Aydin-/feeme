@@ -111,7 +111,12 @@ export const HashratePower = () => {
 
   return (
     <Card className="glass-card" sx={{ height: '100%', mb: { xs: 4, md: 0 } }}>
-      <CardContent sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <CardContent sx={{ 
+        height: '100%', 
+        display: 'flex', 
+        flexDirection: 'column',
+        maxHeight: { xs: '500px', sm: '600px' }
+      }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6">Network Hashrate</Typography>
           <ToggleButtonGroup
