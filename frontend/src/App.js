@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Container,
   Box,
@@ -11,10 +11,38 @@ import {
   Alert,
 } from '@mui/material';
 import axios from 'axios';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+} from 'chart.js';
+import GaugeChart from 'react-gauge-chart';
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 const API_BASE_URL = 'https://feeme.onrender.com/api';
+const MEMPOOL_API_URL = 'https://mempool.space/api';
 const COINLAYER_API_KEY = process.env.REACT_APP_COINLAYER_API_KEY;
 const EXCHANGERATES_API_KEY = process.env.REACT_APP_EXCHANGERATES_API_KEY;
+const UPDATE_INTERVAL = 15000; // 15 seconds
+const HISTORY_POINTS = 60; // 15 minutes (60 points at 15-second intervals)
 
 // Default transaction size (average Bitcoin transaction is ~250 bytes)
 const DEFAULT_TX_SIZE = 250;
@@ -52,11 +80,81 @@ function App() {
     eurToNok: null
   });
   const [fiatLoading, setFiatLoading] = useState(false);
+  const [feeHistory, setFeeHistory] = useState({
+    timestamps: [],
+    fastFees: [],
+    mediumFees: [],
+    slowFees: []
+  });
+  const [mempoolStats, setMempoolStats] = useState({
+    mempoolSize: 0,
+    mempoolTxs: 0,
+    totalFees: 0,
+    medianFee: 0
+  });
+  const [blockchainInfo, setBlockchainInfo] = useState({
+    blocks: 0,
+    difficulty: 0,
+    progressPercent: 0,
+    estimatedRetargetDate: null
+  });
+  
+  const updateTimerRef = useRef(null);
 
   useEffect(() => {
+    // Initial fetches for all data
     fetchNetworkStatus();
     calculateFees();
+    fetchMempoolStats();
+    fetchBlockchainInfo();
+
+    // Set up auto-update interval for network status only
+    updateTimerRef.current = setInterval(() => {
+      fetchNetworkStatus();
+      calculateFees();
+    }, UPDATE_INTERVAL);
+
+    // Set up a separate interval for background updates of mempool and blockchain info
+    const backgroundTimer = setInterval(() => {
+      // Use state updater functions to avoid UI flashing
+      fetchMempoolStats().then(() => {
+        // Optional: Add any smooth transition logic here
+      });
+      fetchBlockchainInfo().then(() => {
+        // Optional: Add any smooth transition logic here
+      });
+    }, 120000); // Update every 2 minutes
+
+    // Cleanup
+    return () => {
+      if (updateTimerRef.current) {
+        clearInterval(updateTimerRef.current);
+      }
+      clearInterval(backgroundTimer);
+    };
   }, []);
+
+  // Update fee history when new fees are fetched
+  useEffect(() => {
+    if (networkStatus) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString();
+
+      setFeeHistory(prev => {
+        const newTimestamps = [...prev.timestamps, timeStr].slice(-HISTORY_POINTS);
+        const newFastFees = [...prev.fastFees, networkStatus.fastestFee].slice(-HISTORY_POINTS);
+        const newMediumFees = [...prev.mediumFees, networkStatus.halfHourFee].slice(-HISTORY_POINTS);
+        const newSlowFees = [...prev.slowFees, networkStatus.hourFee].slice(-HISTORY_POINTS);
+
+        return {
+          timestamps: newTimestamps,
+          fastFees: newFastFees,
+          mediumFees: newMediumFees,
+          slowFees: newSlowFees
+        };
+      });
+    }
+  }, [networkStatus]);
 
   const fetchNetworkStatus = async () => {
     try {
@@ -128,17 +226,169 @@ function App() {
   };
 
   const handleFiatToggle = async () => {
-    setShowFiat(prev => !prev);
-    if (!exchangeRates.btcToEur || !exchangeRates.eurToNok) {
+    const newShowFiat = !showFiat;
+    setShowFiat(newShowFiat);
+    
+    // Only fetch rates when enabling fiat display and rates are not available
+    if (newShowFiat && (!exchangeRates.btcToEur || !exchangeRates.eurToNok)) {
       await fetchExchangeRates();
     }
+  };
+
+  const fetchMempoolStats = async () => {
+    try {
+      const mempoolResponse = await axios.get(`${MEMPOOL_API_URL}/mempool`);
+      
+      // Update state using functional update to ensure smooth transition
+      setMempoolStats(prev => ({
+        ...prev,
+        mempoolSize: mempoolResponse.data.vsize || prev.mempoolSize,
+        mempoolTxs: mempoolResponse.data.count || prev.mempoolTxs,
+        totalFees: mempoolResponse.data.total_fee || prev.totalFees,
+        medianFee: mempoolResponse.data.vsize > 0 ? 
+          Math.round((mempoolResponse.data.total_fee / mempoolResponse.data.vsize) * 100) / 100 : prev.medianFee
+      }));
+    } catch (err) {
+      console.error('Failed to fetch mempool stats:', err);
+    }
+  };
+
+  const fetchBlockchainInfo = async () => {
+    try {
+      // Fetch latest blocks for height
+      const blocksResponse = await axios.get(`${MEMPOOL_API_URL}/v1/blocks/tip/height`);
+      
+      // Fetch difficulty adjustment info
+      const difficultyResponse = await axios.get(`${MEMPOOL_API_URL}/v1/difficulty-adjustment`);
+      
+      // Update state using functional update to ensure smooth transition
+      setBlockchainInfo(prev => ({
+        ...prev,
+        blocks: blocksResponse.data || prev.blocks,
+        difficulty: difficultyResponse.data.difficulty || prev.difficulty,
+        progressPercent: difficultyResponse.data.progressPercent || prev.progressPercent,
+        estimatedRetargetDate: difficultyResponse.data.estimatedRetargetDate ? 
+          new Date(difficultyResponse.data.estimatedRetargetDate).getTime() / 1000 : prev.estimatedRetargetDate
+      }));
+    } catch (err) {
+      console.error('Failed to fetch blockchain info:', err);
+    }
+  };
+
+  // Chart configuration
+  const chartData = {
+    labels: feeHistory.timestamps,
+    datasets: [
+      {
+        label: 'Fast',
+        data: feeHistory.fastFees,
+        borderColor: 'rgba(0, 200, 83, 1)',
+        backgroundColor: 'rgba(0, 200, 83, 0.1)',
+        fill: true,
+        tension: 0.4
+      },
+      {
+        label: 'Medium',
+        data: feeHistory.mediumFees,
+        borderColor: 'rgba(255, 214, 0, 1)',
+        backgroundColor: 'rgba(255, 214, 0, 0.1)',
+        fill: true,
+        tension: 0.4
+      },
+      {
+        label: 'Slow',
+        data: feeHistory.slowFees,
+        borderColor: 'rgba(255, 61, 0, 1)',
+        backgroundColor: 'rgba(255, 61, 0, 0.1)',
+        fill: true,
+        tension: 0.4
+      }
+    ]
+  };
+
+  // Calculate max fee for y-axis scaling
+  const maxFee = Math.max(
+    ...feeHistory.fastFees,
+    ...feeHistory.mediumFees,
+    ...feeHistory.slowFees
+  );
+
+  // Calculate step size to create 5 rows with max at ~80% of scale
+  const getStepSize = (max) => {
+    // Round up max to next unit
+    const baseUnit = max <= 5 ? 1 : max <= 10 ? 2 : max <= 20 ? 5 : max <= 50 ? 10 : 20;
+    const roundedMax = Math.ceil(max / baseUnit) * baseUnit;
+    // Return 1/5 of the scale that will fit the rounded max at 80%
+    return Math.ceil(roundedMax / 4);
+  };
+
+  const stepSize = getStepSize(maxFee);
+  // Set max to 5 steps to ensure max fee is at ~80% of scale
+  const yAxisMax = stepSize * 5;
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          color: 'rgba(255, 255, 255, 0.8)'
+        }
+      },
+      title: {
+        display: true,
+        text: 'Fee Rate History (Last 15 Minutes)',
+        color: 'rgba(255, 255, 255, 0.8)'
+      }
+    },
+    scales: {
+      y: {
+        min: 0,
+        max: yAxisMax,
+        ticks: { 
+          color: 'rgba(255, 255, 255, 0.6)',
+          callback: (value) => value,
+          stepSize: stepSize
+        },
+        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+        title: {
+          display: true,
+          text: 'sats/vB',
+          color: 'rgba(255, 255, 255, 0.8)'
+        }
+      },
+      x: {
+        ticks: { color: 'rgba(255, 255, 255, 0.6)' },
+        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+      }
+    }
+  };
+
+  // Format numbers for display
+  const formatNumber = (num) => {
+    return new Intl.NumberFormat().format(num);
+  };
+
+  const formatBytes = (bytes) => {
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    if (bytes === 0) return '0 Bytes';
+    const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+    return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+  };
+
+  const formatHashrate = (hashrate) => {
+    const sizes = ['H/s', 'KH/s', 'MH/s', 'GH/s', 'TH/s', 'PH/s', 'EH/s'];
+    if (hashrate === 0) return '0 H/s';
+    const i = parseInt(Math.floor(Math.log(hashrate) / Math.log(1000)));
+    return Math.round(hashrate / Math.pow(1000, i), 2) + ' ' + sizes[i];
   };
 
   return (
     <>
       <div className="bg-pattern"></div>
       <BitcoinLogo />
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Box sx={{ my: 4 }}>
           {/* Enhanced title section */}
           <div className="app-title">
@@ -156,44 +406,50 @@ function App() {
             </Alert>
           )}
 
+          {/* Network Status Card */}
           <Card className="glass-card" sx={{ mb: 4 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Network Status
               </Typography>
               {networkStatus ? (
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={4}>
-                    <div className="fee-display fee-fast">
-                      <Typography className="fee-label">
-                        Fast Fee
-                      </Typography>
-                      <Typography variant="h6" className="fee-value">
-                        {networkStatus.fastestFee} sats/vB
-                      </Typography>
-                    </div>
+                <>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={4}>
+                      <div className="fee-display fee-fast">
+                        <Typography className="fee-label">
+                          Fast Fee
+                        </Typography>
+                        <Typography variant="h6" className="fee-value">
+                          {networkStatus.fastestFee} sats/vB
+                        </Typography>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <div className="fee-display fee-medium">
+                        <Typography className="fee-label">
+                          Medium Fee
+                        </Typography>
+                        <Typography variant="h6" className="fee-value">
+                          {networkStatus.halfHourFee} sats/vB
+                        </Typography>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <div className="fee-display fee-slow">
+                        <Typography className="fee-label">
+                          Slow Fee
+                        </Typography>
+                        <Typography variant="h6" className="fee-value">
+                          {networkStatus.hourFee} sats/vB
+                        </Typography>
+                      </div>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <div className="fee-display fee-medium">
-                      <Typography className="fee-label">
-                        Medium Fee
-                      </Typography>
-                      <Typography variant="h6" className="fee-value">
-                        {networkStatus.halfHourFee} sats/vB
-                      </Typography>
-                    </div>
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <div className="fee-display fee-slow">
-                      <Typography className="fee-label">
-                        Slow Fee
-                      </Typography>
-                      <Typography variant="h6" className="fee-value">
-                        {networkStatus.hourFee} sats/vB
-                      </Typography>
-                    </div>
-                  </Grid>
-                </Grid>
+                  <Box sx={{ height: '300px', mt: 4 }}>
+                    <Line data={chartData} options={chartOptions} />
+                  </Box>
+                </>
               ) : (
                 <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
                   <CircularProgress size={32} />
@@ -201,6 +457,105 @@ function App() {
               )}
             </CardContent>
           </Card>
+
+          {/* Mempool Statistics Card */}
+          <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid item xs={12} md={6}>
+              <Card className="glass-card">
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Mempool Statistics
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <div className="stat-display">
+                        <Typography className="stat-label">
+                          Mempool Size
+                        </Typography>
+                        <Typography variant="h6" className="stat-value">
+                          {formatBytes(mempoolStats.mempoolSize)}
+                        </Typography>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <div className="stat-display">
+                        <Typography className="stat-label">
+                          Pending Transactions
+                        </Typography>
+                        <Typography variant="h6" className="stat-value">
+                          {formatNumber(mempoolStats.mempoolTxs)}
+                        </Typography>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Box sx={{ mt: 2 }}>
+                        <Typography variant="subtitle2" gutterBottom>
+                          Mempool Capacity
+                        </Typography>
+                        <GaugeChart
+                          id="mempool-gauge"
+                          nrOfLevels={20}
+                          percent={Math.min(mempoolStats.mempoolSize / (300 * 1024 * 1024), 1)} // 300MB max
+                          colors={['#00C853', '#FFD600', '#FF3D00']}
+                          textColor="#ffffff"
+                        />
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Card className="glass-card">
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Blockchain Info
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <div className="stat-display">
+                        <Typography className="stat-label">
+                          Block Height
+                        </Typography>
+                        <Typography variant="h6" className="stat-value">
+                          {formatNumber(blockchainInfo.blocks)}
+                        </Typography>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <div className="stat-display">
+                        <Typography className="stat-label">
+                          Difficulty Adjustment
+                        </Typography>
+                        <Typography variant="h6" className="stat-value">
+                          {blockchainInfo.progressPercent?.toFixed(2)}%
+                        </Typography>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Box sx={{ mt: 2 }}>
+                        <Typography variant="subtitle2" gutterBottom>
+                          Difficulty Adjustment Progress
+                        </Typography>
+                        <GaugeChart
+                          id="difficulty-gauge"
+                          nrOfLevels={20}
+                          percent={blockchainInfo.progressPercent ? blockchainInfo.progressPercent / 100 : 0}
+                          colors={['#f2a900']}
+                          textColor="#ffffff"
+                        />
+                        {blockchainInfo.estimatedRetargetDate && (
+                          <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', mt: 1 }}>
+                            Estimated adjustment: {new Date(blockchainInfo.estimatedRetargetDate * 1000).toLocaleDateString()}
+                          </Typography>
+                        )}
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
 
           <Card className="glass-card">
             <CardContent>

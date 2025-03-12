@@ -327,3 +327,123 @@ body {
     font-size: 1.2rem !important;
   }
 }
+
+/* Statistics display */
+.stat-display {
+  background: rgba(30, 30, 30, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.2rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.stat-display:hover {
+  transform: translateY(-2px);
+  border-color: rgba(242, 169, 0, 0.3);
+  background: rgba(40, 40, 40, 0.5);
+}
+
+.stat-label {
+  color: var(--text-secondary) !important;
+  font-size: 0.9rem !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem !important;
+}
+
+.stat-value {
+  color: var(--text-primary) !important;
+  font-size: 1.4rem !important;
+  font-weight: 700 !important;
+  font-family: 'Roboto Mono', monospace !important;
+}
+
+/* Chart container */
+.chart-container {
+  position: relative;
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(30, 30, 30, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Gauge chart customization */
+.gauge-chart {
+  margin: 1rem 0;
+}
+
+.gauge-chart text {
+  font-family: 'Roboto Mono', monospace !important;
+  font-size: 1rem !important;
+}
+
+/* Auto-update indicator */
+.update-indicator {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background: rgba(30, 30, 30, 0.7);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.update-indicator .dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--success-green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+}
+
+/* Enhanced card transitions */
+.glass-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.glass-card:hover {
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .stat-display {
+    padding: 1rem;
+  }
+  
+  .stat-value {
+    font-size: 1.2rem !important;
+  }
+  
+  .chart-container {
+    padding: 0.5rem;
+  }
+  
+  .update-indicator {
+    position: static;
+    margin-bottom: 1rem;
+    justify-content: center;
+  }
+}
