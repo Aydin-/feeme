@@ -13,6 +13,8 @@ import {
 import axios from 'axios';
 
 const API_BASE_URL = 'https://feeme.onrender.com/api';
+const COINLAYER_API_KEY = process.env.REACT_APP_COINLAYER_API_KEY;
+const EXCHANGERATES_API_KEY = process.env.REACT_APP_EXCHANGERATES_API_KEY;
 
 // Default transaction size (average Bitcoin transaction is ~250 bytes)
 const DEFAULT_TX_SIZE = 250;
@@ -31,9 +33,14 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [networkStatus, setNetworkStatus] = useState(null);
+  const [exchangeRates, setExchangeRates] = useState({
+    btcToUsd: null,
+    usdToNok: null
+  });
 
   useEffect(() => {
     fetchNetworkStatus();
+    fetchExchangeRates();
     // Calculate fees on initial load with default transaction size
     calculateFees();
   }, []);
@@ -44,6 +51,25 @@ function App() {
       setNetworkStatus(response.data);
     } catch (err) {
       setError('Failed to fetch network status');
+    }
+  };
+
+  const fetchExchangeRates = async () => {
+    try {
+      // Fetch BTC to USD rate
+      const btcResponse = await axios.get(`https://api.coinlayer.com/live?access_key=${COINLAYER_API_KEY}&target=USD&symbols=BTC`);
+      const btcToUsd = btcResponse.data.rates.BTC;
+
+      // Fetch USD to NOK rate
+      const fxResponse = await axios.get(`https://api.exchangeratesapi.io/v1/latest?access_key=${EXCHANGERATES_API_KEY}&base=USD&symbols=NOK`);
+      const usdToNok = fxResponse.data.rates.NOK;
+
+      setExchangeRates({
+        btcToUsd,
+        usdToNok
+      });
+    } catch (err) {
+      setError('Failed to fetch exchange rates');
     }
   };
 
@@ -72,6 +98,14 @@ function App() {
     } else {
       setFees(null);
     }
+  };
+
+  // Helper function to convert BTC to NOK
+  const convertBtcToNok = (btcAmount) => {
+    if (!exchangeRates.btcToUsd || !exchangeRates.usdToNok || !btcAmount) return null;
+    const usdAmount = btcAmount * exchangeRates.btcToUsd;
+    const nokAmount = usdAmount * exchangeRates.usdToNok;
+    return nokAmount.toFixed(2);
   };
 
   return (
@@ -167,30 +201,33 @@ function App() {
                   <CircularProgress size={32} />
                 </Box>
               ) : fees ? (
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={4}>
-                    <div className="fee-display fee-fast">
-                      <Typography className="fee-label">
-                        Fast (10 min)
-                      </Typography>
-                      <Typography variant="h6" className="fee-value">{fees.fast} BTC</Typography>
-                    </div>
+                <Grid container spacing={2}>
+                  <Grid item xs={4}>
+                    <Typography variant="body2" color="text.secondary">
+                      Fast (10 min)
+                    </Typography>
+                    <Typography variant="h6">{fees.fast} BTC</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      ≈ {convertBtcToNok(fees.fast)} NOK
+                    </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <div className="fee-display fee-medium">
-                      <Typography className="fee-label">
-                        Medium (30 min)
-                      </Typography>
-                      <Typography variant="h6" className="fee-value">{fees.medium} BTC</Typography>
-                    </div>
+                  <Grid item xs={4}>
+                    <Typography variant="body2" color="text.secondary">
+                      Medium (30 min)
+                    </Typography>
+                    <Typography variant="h6">{fees.medium} BTC</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      ≈ {convertBtcToNok(fees.medium)} NOK
+                    </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <div className="fee-display fee-slow">
-                      <Typography className="fee-label">
-                        Slow (1+ hour)
-                      </Typography>
-                      <Typography variant="h6" className="fee-value">{fees.slow} BTC</Typography>
-                    </div>
+                  <Grid item xs={4}>
+                    <Typography variant="body2" color="text.secondary">
+                      Slow (1+ hour)
+                    </Typography>
+                    <Typography variant="h6">{fees.slow} BTC</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      ≈ {convertBtcToNok(fees.slow)} NOK
+                    </Typography>
                   </Grid>
                 </Grid>
               ) : null}
