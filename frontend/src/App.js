@@ -57,11 +57,11 @@ function App() {
   const fetchExchangeRates = async () => {
     try {
       // Fetch BTC to USD rate
-      const btcResponse = await axios.get(`https://api.coinlayer.com/live?access_key=${COINLAYER_API_KEY}&target=USD&symbols=BTC`);
+      const btcResponse = await axios.get(`https://api.coinlayer.com/live?access_key=${COINLAYER_API_KEY}&target=EUR&symbols=BTC`);
       const btcToUsd = btcResponse.data.rates.BTC;
 
       // Fetch USD to NOK rate
-      const fxResponse = await axios.get(`https://api.exchangeratesapi.io/v1/latest?access_key=${EXCHANGERATES_API_KEY}&base=USD&symbols=NOK`);
+      const fxResponse = await axios.get(`https://api.exchangeratesapi.io/v1/latest?access_key=${EXCHANGERATES_API_KEY}&base=EUR&symbols=NOK`);
       const usdToNok = fxResponse.data.rates.NOK;
 
       setExchangeRates({
