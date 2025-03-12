@@ -17,9 +17,11 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { BitcoinLogo } from '../icons';
+import { ExplorerDrawer } from './ExplorerDrawer';
 
 export const Header = () => {
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [explorerOpen, setExplorerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -34,6 +36,11 @@ export const Header = () => {
 
   const handleAboutClick = () => {
     setAboutOpen(true);
+    handleMenuClose();
+  };
+
+  const handleExplorerClick = () => {
+    setExplorerOpen(true);
     handleMenuClose();
   };
 
@@ -80,7 +87,7 @@ export const Header = () => {
                 onClose={handleMenuClose}
               >
                 <MenuItem onClick={handleAboutClick}>About</MenuItem>
-                <MenuItem onClick={handleMenuClose} component="a" href="https://mempool.space" target="_blank">Explorer</MenuItem>
+                <MenuItem onClick={handleExplorerClick}>Explorer</MenuItem>
                 <MenuItem onClick={handleMenuClose} component="a" href="https://github.com/Aydin-" target="_blank">GitHub</MenuItem>
               </Menu>
             </>
@@ -98,8 +105,7 @@ export const Header = () => {
               </Button>
               <Button 
                 color="inherit" 
-                href="https://mempool.space"
-                target="_blank"
+                onClick={handleExplorerClick}
                 sx={{ 
                   color: 'rgba(255, 255, 255, 0.9)',
                   '&:hover': { color: '#f2a900' }
@@ -152,6 +158,11 @@ export const Header = () => {
           </DialogContentText>
         </DialogContent>
       </Dialog>
+
+      <ExplorerDrawer 
+        open={explorerOpen}
+        onClose={() => setExplorerOpen(false)}
+      />
     </>
   );
 }; 

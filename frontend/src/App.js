@@ -189,7 +189,20 @@ function App() {
             </Alert>
           )}
 
-          <Grid container spacing={4} sx={{ mb: 4 }}>
+          <FeeCalculator
+            transactionSize={transactionSize}
+            onSizeChange={handleSizeChange}
+            selectedWallet={selectedWallet}
+            onWalletSelect={handleWalletSelect}
+            fees={fees}
+            loading={loading}
+            showFiat={showFiat}
+            onFiatToggle={handleFiatToggle}
+            fiatLoading={fiatLoading}
+            convertBtcToFiat={convertBtcToFiat}
+          />
+
+          <Grid container spacing={4} sx={{ mt: 4, mb: 4 }}>
             <Grid item xs={12} lg={6}>
               <NetworkStatus 
                 networkStatus={networkStatus}
@@ -209,19 +222,6 @@ function App() {
               <BlockchainInfo blockchainInfo={blockchainInfo} />
             </Grid>
           </Grid>
-
-          <FeeCalculator
-            transactionSize={transactionSize}
-            onSizeChange={handleSizeChange}
-            selectedWallet={selectedWallet}
-            onWalletSelect={handleWalletSelect}
-            fees={fees}
-            loading={loading}
-            showFiat={showFiat}
-            onFiatToggle={handleFiatToggle}
-            fiatLoading={fiatLoading}
-            convertBtcToFiat={convertBtcToFiat}
-          />
 
           <Footer />
         </Box>

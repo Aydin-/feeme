@@ -4,7 +4,7 @@ import { GithubIcon, LinkedInIcon } from '../icons';
 export const Footer = () => {
   return (
     <div className="footer">
-      <p>Data provided by mempool.space API • Stay Sovereign</p>
+      <p>Designed and developed by Aydin Gungordu • Data provided by mempool.space API • Stay Sovereign</p>
       <div className="social-links">
         <a 
           href="https://github.com/Aydin-" 
