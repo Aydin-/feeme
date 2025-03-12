@@ -46,15 +46,15 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [networkStatus, setNetworkStatus] = useState(null);
+  const [showFiat, setShowFiat] = useState(false);
   const [exchangeRates, setExchangeRates] = useState({
-    btcToUsd: null,
-    usdToNok: null
+    btcToEur: null,
+    eurToNok: null
   });
+  const [fiatLoading, setFiatLoading] = useState(false);
 
   useEffect(() => {
     fetchNetworkStatus();
-    fetchExchangeRates();
-    // Calculate fees on initial load with default transaction size
     calculateFees();
   }, []);
 
@@ -69,20 +69,23 @@ function App() {
 
   const fetchExchangeRates = async () => {
     try {
-      // Fetch BTC to USD rate
+      setFiatLoading(true);
+      // Fetch BTC to EUR rate
       const btcResponse = await axios.get(`https://api.coinlayer.com/live?access_key=${COINLAYER_API_KEY}&target=EUR&symbols=BTC`);
-      const btcToUsd = btcResponse.data.rates.BTC;
+      const btcToEur = btcResponse.data.rates.BTC;
 
-      // Fetch USD to NOK rate
+      // Fetch EUR to NOK rate
       const fxResponse = await axios.get(`https://api.exchangeratesapi.io/v1/latest?access_key=${EXCHANGERATES_API_KEY}&base=EUR&symbols=NOK`);
-      const usdToNok = fxResponse.data.rates.NOK;
+      const eurToNok = fxResponse.data.rates.NOK;
 
       setExchangeRates({
-        btcToUsd,
-        usdToNok
+        btcToEur,
+        eurToNok
       });
     } catch (err) {
       setError('Failed to fetch exchange rates');
+    } finally {
+      setFiatLoading(false);
     }
   };
 
@@ -113,12 +116,22 @@ function App() {
     }
   };
 
-  // Helper function to convert BTC to NOK
-  const convertBtcToNok = (btcAmount) => {
-    if (!exchangeRates.btcToUsd || !exchangeRates.usdToNok || !btcAmount) return null;
-    const usdAmount = btcAmount * exchangeRates.btcToUsd;
-    const nokAmount = usdAmount * exchangeRates.usdToNok;
-    return nokAmount.toFixed(2);
+  // Helper function to convert BTC to EUR and NOK
+  const convertBtcToFiat = (btcAmount) => {
+    if (!exchangeRates.btcToEur || !exchangeRates.eurToNok || !btcAmount) return null;
+    const eurAmount = btcAmount * exchangeRates.btcToEur;
+    const nokAmount = eurAmount * exchangeRates.eurToNok;
+    return {
+      eur: eurAmount.toFixed(2),
+      nok: nokAmount.toFixed(2)
+    };
+  };
+
+  const handleFiatToggle = async () => {
+    setShowFiat(prev => !prev);
+    if (!exchangeRates.btcToEur || !exchangeRates.eurToNok) {
+      await fetchExchangeRates();
+    }
   };
 
   return (
@@ -215,44 +228,108 @@ function App() {
                   <CircularProgress size={32} />
                 </Box>
               ) : fees ? (
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={4}>
-                    <div className="fee-display fee-fast">
-                      <Typography variant="body2" color="text.secondary">
-                        Fast (10 min)
-                      </Typography>
-                      <Typography variant="h6">{fees.fast} BTC</Typography>
-                      <div className="currency-conversion">
-                        <span className="amount">{convertBtcToNok(fees.fast)}</span>
-                        <span className="currency">NOK</span>
+                <>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={4}>
+                      <div className="fee-display fee-fast">
+                        <Typography variant="body2" color="text.secondary">
+                          Fast (10 min)
+                        </Typography>
+                        <Typography variant="h6">{fees.fast} BTC</Typography>
+                        {showFiat && (
+                          <div className="currency-conversion">
+                            {fiatLoading ? (
+                              <CircularProgress size={16} />
+                            ) : (
+                              <>
+                                {convertBtcToFiat(fees.fast)?.eur && (
+                                  <div>
+                                    <span className="amount">{convertBtcToFiat(fees.fast).eur}</span>
+                                    <span className="currency">EUR</span>
+                                  </div>
+                                )}
+                                {convertBtcToFiat(fees.fast)?.nok && (
+                                  <div>
+                                    <span className="amount">{convertBtcToFiat(fees.fast).nok}</span>
+                                    <span className="currency">NOK</span>
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <div className="fee-display fee-medium">
-                      <Typography variant="body2" color="text.secondary">
-                        Medium (30 min)
-                      </Typography>
-                      <Typography variant="h6">{fees.medium} BTC</Typography>
-                      <div className="currency-conversion">
-                        <span className="amount">{convertBtcToNok(fees.medium)}</span>
-                        <span className="currency">NOK</span>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <div className="fee-display fee-medium">
+                        <Typography variant="body2" color="text.secondary">
+                          Medium (30 min)
+                        </Typography>
+                        <Typography variant="h6">{fees.medium} BTC</Typography>
+                        {showFiat && (
+                          <div className="currency-conversion">
+                            {fiatLoading ? (
+                              <CircularProgress size={16} />
+                            ) : (
+                              <>
+                                {convertBtcToFiat(fees.medium)?.eur && (
+                                  <div>
+                                    <span className="amount">{convertBtcToFiat(fees.medium).eur}</span>
+                                    <span className="currency">EUR</span>
+                                  </div>
+                                )}
+                                {convertBtcToFiat(fees.medium)?.nok && (
+                                  <div>
+                                    <span className="amount">{convertBtcToFiat(fees.medium).nok}</span>
+                                    <span className="currency">NOK</span>
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <div className="fee-display fee-slow">
-                      <Typography variant="body2" color="text.secondary">
-                        Slow (1+ hour)
-                      </Typography>
-                      <Typography variant="h6">{fees.slow} BTC</Typography>
-                      <div className="currency-conversion">
-                        <span className="amount">{convertBtcToNok(fees.slow)}</span>
-                        <span className="currency">NOK</span>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <div className="fee-display fee-slow">
+                        <Typography variant="body2" color="text.secondary">
+                          Slow (1+ hour)
+                        </Typography>
+                        <Typography variant="h6">{fees.slow} BTC</Typography>
+                        {showFiat && (
+                          <div className="currency-conversion">
+                            {fiatLoading ? (
+                              <CircularProgress size={16} />
+                            ) : (
+                              <>
+                                {convertBtcToFiat(fees.slow)?.eur && (
+                                  <div>
+                                    <span className="amount">{convertBtcToFiat(fees.slow).eur}</span>
+                                    <span className="currency">EUR</span>
+                                  </div>
+                                )}
+                                {convertBtcToFiat(fees.slow)?.nok && (
+                                  <div>
+                                    <span className="amount">{convertBtcToFiat(fees.slow).nok}</span>
+                                    <span className="currency">NOK</span>
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        )}
                       </div>
-                    </div>
+                    </Grid>
                   </Grid>
-                </Grid>
+                  <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                    <button 
+                      className="fiat-toggle-button" 
+                      onClick={handleFiatToggle}
+                    >
+                      {showFiat ? 'Hide Fiat Values' : 'Show Fiat Values'}
+                    </button>
+                  </Box>
+                </>
               ) : null}
             </CardContent>
           </Card>
