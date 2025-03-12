@@ -164,6 +164,50 @@ body {
 /* Footer */
 .footer {
   color: var(--text-secondary);
+  text-align: center;
+  margin-top: 3rem;
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(18, 18, 18, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.footer p {
+  margin-bottom: 0.8rem;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+
+.social-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.social-link:hover {
+  color: var(--bitcoin-gold);
+  background: rgba(242, 169, 0, 0.1);
+  border-color: rgba(242, 169, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.social-link svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }
 
 /* Loading spinner */
