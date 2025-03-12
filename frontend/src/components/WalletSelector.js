@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, Grid, Card } from '@mui/material';
 import { WALLET_CONFIGS, getWalletAdjustmentText } from '../config/walletConfigs';
+import { WalletIcons } from '../config/walletIcons';
 
 export const WalletSelector = ({ selectedWallet, onWalletSelect }) => {
   return (
@@ -18,14 +19,19 @@ export const WalletSelector = ({ selectedWallet, onWalletSelect }) => {
       </Typography>
       <Grid container spacing={2}>
         {Object.entries(WALLET_CONFIGS).map(([key, wallet]) => (
-          <Grid item xs={12} sm={6} md={3} key={key}>
+          <Grid item xs={6} sm={4} md={2.4} key={key}>
             <Card 
               className={`wallet-card ${selectedWallet === key ? 'selected' : ''}`}
               onClick={() => onWalletSelect(key)}
               sx={{
                 cursor: 'pointer',
-                p: 2.5,
+                p: 1.5,
                 height: '100%',
+                minHeight: '90px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
                 transition: 'all 0.2s ease-in-out',
                 position: 'relative',
                 overflow: 'visible',
@@ -43,13 +49,25 @@ export const WalletSelector = ({ selectedWallet, onWalletSelect }) => {
                 }
               }}
             >
+              <Box 
+                sx={{ 
+                  width: '32px', 
+                  height: '32px', 
+                  mb: 1,
+                  opacity: selectedWallet === key ? 1 : 0.7,
+                  transition: 'opacity 0.2s ease-in-out'
+                }}
+              >
+                {WalletIcons[key]}
+              </Box>
               <Typography 
                 variant="h6" 
                 sx={{ 
-                  fontSize: '1.1rem',
-                  mb: 1,
+                  fontSize: '1rem',
+                  mb: 0.5,
                   color: selectedWallet === key ? '#f2a900' : 'rgba(255, 255, 255, 0.9)',
-                  fontWeight: selectedWallet === key ? 600 : 500
+                  fontWeight: selectedWallet === key ? 600 : 500,
+                  textAlign: 'center'
                 }}
               >
                 {wallet.name}
@@ -60,7 +78,9 @@ export const WalletSelector = ({ selectedWallet, onWalletSelect }) => {
                   color: selectedWallet === key ? 
                     'rgba(255, 255, 255, 0.9)' : 
                     'rgba(255, 255, 255, 0.7)',
-                  lineHeight: 1.4
+                  lineHeight: 1.3,
+                  fontSize: '0.8rem',
+                  textAlign: 'center'
                 }}
               >
                 {wallet.description}
@@ -72,7 +92,7 @@ export const WalletSelector = ({ selectedWallet, onWalletSelect }) => {
       <Typography 
         variant="body2" 
         sx={{ 
-          mt: 3,
+          mt: 2,
           textAlign: 'center',
           color: 'rgba(255, 255, 255, 0.7)',
           fontSize: '0.9rem',

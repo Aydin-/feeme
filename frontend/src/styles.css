@@ -252,7 +252,7 @@ body {
   width: 64px;
   height: 64px;
   position: absolute;
-  top: -32px;
+  top: -16px;
   left: 50%;
   transform: translateX(-50%);
   animation: float 6s ease-in-out infinite;
@@ -263,7 +263,7 @@ body {
     transform: translateX(-50%) translateY(0px);
   }
   50% {
-    transform: translateX(-50%) translateY(-10px);
+    transform: translateX(-50%) translateY(-20px);
   }
   100% {
     transform: translateX(-50%) translateY(0px);
