@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, IconButton, Tooltip } from '@mui/material';
+import { Box, IconButton, Tooltip, Menu, MenuItem, useMediaQuery, useTheme } from '@mui/material';
 import { useLanguage } from '../contexts/LanguageContext';
 
 // Flag icons as SVG components
@@ -25,6 +25,78 @@ const NorwayFlag = () => (
 
 export const LanguageSelector = () => {
   const { language, setLanguage } = useLanguage();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLanguageSelect = (lang) => {
+    setLanguage(lang);
+    handleClose();
+  };
+
+  if (isMobile) {
+    return (
+      <>
+        <IconButton
+          onClick={handleClick}
+          sx={{ 
+            padding: '4px',
+            '&:hover': { 
+              backgroundColor: 'rgba(242, 169, 0, 0.1)'
+            }
+          }}
+        >
+          {language === 'en' ? <UKFlag /> : <NorwayFlag />}
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+          PaperProps={{
+            sx: {
+              mt: 1,
+              bgcolor: theme.palette.mode === 'dark' ? 'rgba(18, 18, 18, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            }
+          }}
+        >
+          <MenuItem 
+            onClick={() => handleLanguageSelect('en')}
+            selected={language === 'en'}
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1,
+              color: language === 'en' ? '#f2a900' : 'inherit'
+            }}
+          >
+            <UKFlag /> English
+          </MenuItem>
+          <MenuItem 
+            onClick={() => handleLanguageSelect('no')}
+            selected={language === 'no'}
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1,
+              color: language === 'no' ? '#f2a900' : 'inherit'
+            }}
+          >
+            <NorwayFlag /> Norsk
+          </MenuItem>
+        </Menu>
+      </>
+    );
+  }
 
   return (
     <Box sx={{ display: 'flex', gap: 1 }}>

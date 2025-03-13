@@ -18,14 +18,15 @@
 
 /* Title Styles */
 .header-title {
-  font-size: 1.2rem;
+  font-size: 0.75rem;
   font-weight: 700;
   font-family: "Playfair Display", serif;
   background-size: 200% auto;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
   position: relative;
   text-align: left;
+  white-space: nowrap;
 }
 
 .header-title::before {
@@ -44,7 +45,7 @@
   position: absolute;
   top: -8px;
   right: -8px;
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: rgba(242, 169, 0, 0.8);
 }
 
@@ -52,6 +53,10 @@
 @media (min-width: 600px) {
   .header-title {
     font-size: 1.5rem;
+    letter-spacing: 1px;
+  }
+  .header-title::after {
+    font-size: 1.2rem;
   }
 }
 
@@ -64,13 +69,14 @@
 /* Layout Styles */
 .header-toolbar {
   justify-content: space-between;
-  min-height: 64px;
-  padding-left: 16px;
-  padding-right: 16px;
+  min-height: 48px;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 @media (min-width: 600px) {
   .header-toolbar {
+    min-height: 64px;
     padding-left: 32px;
     padding-right: 32px;
   }

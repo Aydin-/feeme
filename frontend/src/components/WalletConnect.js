@@ -90,14 +90,14 @@ const WalletConnect = () => {
           sx={{
             borderRadius: '20px',
             textTransform: 'none',
-            px: 2,
-            py: 1,
+            px: { xs: 1.5, sm: 2 },
+            py: { xs: 0.5, sm: 1 },
             '&:hover': {
               backgroundColor: 'primary.dark',
             },
           }}
         >
-          <Typography variant="body2">
+          <Typography variant="body2" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
             {isConnecting ? 'Connecting...' : 'Connect Wallet'}
           </Typography>
         </Button>
