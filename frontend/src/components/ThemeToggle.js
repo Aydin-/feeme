@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton, Tooltip } from '@mui/material';
+import { ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import { useTheme } from '../contexts/ThemeContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -10,20 +10,31 @@ export const ThemeToggle = () => {
   const { t } = useLanguage();
 
   return (
-    <Tooltip title={isDarkMode ? t('switchToLightMode') : t('switchToDarkMode')}>
-      <IconButton
+    <ListItem disablePadding>
+      <ListItemButton
         onClick={toggleDarkMode}
-        color="inherit"
-        size="small"
         sx={{
-          bgcolor: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: 2,
+          mb: 1,
+          mx: 1,
           '&:hover': {
-            bgcolor: 'rgba(255, 255, 255, 0.2)',
+            backgroundColor: 'rgba(255, 255, 255, 0.05)',
           },
         }}
       >
-        {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-      </IconButton>
-    </Tooltip>
+        <ListItemIcon sx={{ minWidth: 40 }}>
+          {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+        </ListItemIcon>
+        <ListItemText 
+          primary={isDarkMode ? t('darkMode') : t('lightMode')}
+          sx={{ 
+            textTransform: 'capitalize',
+            '& .MuiListItemText-primary': {
+              color: 'inherit'
+            }
+          }}
+        />
+      </ListItemButton>
+    </ListItem>
   );
 }; 

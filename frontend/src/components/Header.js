@@ -10,7 +10,6 @@ import {
 import { LanguageSelector } from './LanguageSelector';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme as useAppTheme } from '../contexts/ThemeContext';
-import { ThemeToggle } from './ThemeToggle';
 import WalletConnect from './WalletConnect';
 import './Header.css';
 
@@ -44,7 +43,6 @@ export const Header = () => {
         </Box>
 
         <Box className="header-actions">
-          <ThemeToggle />
           <LanguageSelector />
           <WalletConnect />
         </Box>

@@ -10,9 +10,11 @@ import {
   Drawer,
   IconButton,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Divider
 } from '@mui/material';
 import { useLanguage } from '../contexts/LanguageContext';
+import { ThemeToggle } from './ThemeToggle';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -52,42 +54,56 @@ export function Navigation({ currentPage, onPageChange }) {
   };
 
   const drawerContent = (
-    <List sx={{ 
-      width: '100%', 
-      pt: { xs: 8, md: 2 }
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      height: '100%',
+      minHeight: isMobile ? '100vh' : 'auto'
     }}>
-      {menuItems.map((item) => (
-        <ListItem key={item.id} disablePadding>
-          <ListItemButton
-            selected={currentPage === item.id}
-            onClick={() => handlePageChange(item.id)}
-            sx={{
-              borderRadius: 2,
-              mb: 1,
-              mx: 1,
-              '&.Mui-selected': {
-                backgroundColor: 'rgba(242, 169, 0, 0.1)',
-                '&:hover': {
-                  backgroundColor: 'rgba(242, 169, 0, 0.15)',
+      <List sx={{ 
+        width: '100%', 
+        pt: { xs: 8, md: 2 },
+        flex: 1
+      }}>
+        {menuItems.map((item) => (
+          <ListItem key={item.id} disablePadding>
+            <ListItemButton
+              selected={currentPage === item.id}
+              onClick={() => handlePageChange(item.id)}
+              sx={{
+                borderRadius: 2,
+                mb: 1,
+                mx: 1,
+                '&.Mui-selected': {
+                  backgroundColor: 'rgba(242, 169, 0, 0.1)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(242, 169, 0, 0.15)',
+                  },
+                  '& .MuiListItemIcon-root': {
+                    color: '#f2a900',
+                  },
+                  '& .MuiListItemText-primary': {
+                    color: '#f2a900',
+                    fontWeight: 600,
+                  },
                 },
-                '& .MuiListItemIcon-root': {
-                  color: '#f2a900',
-                },
-                '& .MuiListItemText-primary': {
-                  color: '#f2a900',
-                  fontWeight: 600,
-                },
-              },
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 40 }}>
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText primary={item.label} />
-          </ListItemButton>
-        </ListItem>
-      ))}
-    </List>
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText primary={item.label} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Box sx={{ mt: 'auto', pb: 2 }}>
+        <Divider sx={{ mx: 2, mb: 2 }} />
+        <List sx={{ width: '100%' }}>
+          <ThemeToggle />
+        </List>
+      </Box>
+    </Box>
   );
 
   if (isMobile) {

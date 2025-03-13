@@ -4,6 +4,8 @@ export const translations = {
     title: 'Bitcoin Nomad',
     aboutMenu: 'About',
     explorer: 'Explorer',
+    darkMode: 'Dark Mode',
+    lightMode: 'Light Mode',
     
     // Navigation
     Fees: 'Fee Calculator',
@@ -194,6 +196,8 @@ export const translations = {
     title: 'Bitcoin Nomad',
     aboutMenu: 'Om',
     explorer: 'Utforsker',
+    darkMode: 'Mørkt Modus',
+    lightMode: 'Lys Modus',
     
     // Navigation
     Fees: 'Gebyrkalkulator',
