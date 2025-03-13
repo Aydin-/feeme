@@ -133,6 +133,22 @@ export const Header = () => {
         onClose={() => setAboutOpen(false)}
         maxWidth="sm"
         fullWidth
+        PaperProps={{
+          sx: {
+            bgcolor: isDarkMode ? '#1a1a1a' : '#ffffff',
+            color: isDarkMode ? '#ffffff' : '#000000',
+            '& .MuiDialogTitle-root': {
+              background: 'linear-gradient(45deg, #f2a900 30%, #ff8e3c 90%)',
+              color: 'white',
+            },
+            '& .MuiDialogContent-root': {
+              bgcolor: isDarkMode ? '#1a1a1a' : '#ffffff',
+            },
+            '& .MuiDialogContentText-root': {
+              color: isDarkMode ? '#ffffff' : '#000000',
+            }
+          }
+        }}
       >
         <DialogTitle className="dialog-title">
           {t('title')}
