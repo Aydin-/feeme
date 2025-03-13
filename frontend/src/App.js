@@ -19,6 +19,7 @@ import { useTheme } from './contexts/ThemeContext';
 import { PriceHistory } from './components/PriceHistory';
 import { Navigation } from './components/Navigation';
 import Portfolio from './components/Portfolio';
+import { Web3ContextProvider } from './contexts/Web3Context';
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState('fees');
@@ -314,7 +315,9 @@ function App() {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <AppContent />
+        <Web3ContextProvider>
+          <AppContent />
+        </Web3ContextProvider>
       </LanguageProvider>
     </ThemeProvider>
   );
