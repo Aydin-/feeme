@@ -34,6 +34,7 @@ const popularCoins = [
 
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 const CACHE_KEY = 'coin_prices_cache';
+const PORTFOLIO_KEY = 'portfolio_data';
 
 const getCachedPrices = () => {
   const cached = localStorage.getItem(CACHE_KEY);
@@ -54,17 +55,31 @@ const setCachedPrices = (prices) => {
   }));
 };
 
+const getPortfolioData = () => {
+  const data = localStorage.getItem(PORTFOLIO_KEY);
+  return data ? JSON.parse(data) : [];
+};
+
+const setPortfolioData = (coins) => {
+  localStorage.setItem(PORTFOLIO_KEY, JSON.stringify(coins));
+};
+
 const Portfolio = () => {
   const { t } = useLanguage();
-  const [coins, setCoins] = useState([]);
+  const [coins, setCoins] = useState(getPortfolioData());
   const [prices, setPrices] = useState({});
   const [loading, setLoading] = useState(false);
   const [newCoin, setNewCoin] = useState({ 
-    id: 'bitcoin', 
-    name: 'Bitcoin', 
-    symbol: '₿',
-    amount: '' 
+    id: '', 
+    name: '', 
+    symbol: '',
+    amount: '0' 
   });
+
+  // Save portfolio data whenever it changes
+  useEffect(() => {
+    setPortfolioData(coins);
+  }, [coins]);
 
   useEffect(() => {
     const fetchPrices = async () => {
@@ -103,16 +118,50 @@ const Portfolio = () => {
     return () => clearInterval(interval);
   }, [coins]);
 
-  const handleAddCoin = () => {
-    if (newCoin.amount) {
-      setCoins([...coins, { ...newCoin, amount: parseFloat(newCoin.amount) }]);
-      setNewCoin({ 
-        id: 'bitcoin', 
-        name: 'Bitcoin', 
-        symbol: '₿',
-        amount: '' 
-      });
+  const handleCoinSelect = (e) => {
+    const selected = popularCoins.find(c => c.id === e.target.value);
+    if (!selected) return;
+    
+    const existingCoin = coins.find(c => c.id === selected.id);
+    
+    setNewCoin({
+      id: selected.id,
+      name: selected.name,
+      symbol: selected.symbol,
+      amount: existingCoin ? existingCoin.amount.toString() : ''
+    });
+  };
+
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      setNewCoin(prev => ({ ...prev, amount: value }));
     }
+  };
+
+  const handleAddCoin = () => {
+    if (!newCoin.id || !newCoin.amount || parseFloat(newCoin.amount) <= 0) return;
+
+    const existingIndex = coins.findIndex(c => c.id === newCoin.id);
+    
+    if (existingIndex >= 0) {
+      // Update existing coin amount
+      setCoins(coins.map((coin, index) => 
+        index === existingIndex 
+          ? { ...coin, amount: parseFloat(newCoin.amount) }
+          : coin
+      ));
+    } else {
+      // Add new coin
+      setCoins([...coins, { ...newCoin, amount: parseFloat(newCoin.amount) }]);
+    }
+    
+    setNewCoin({ 
+      id: '', 
+      name: '', 
+      symbol: '',
+      amount: '' 
+    });
   };
 
   const handleDeleteCoin = (index) => {
@@ -160,19 +209,21 @@ const Portfolio = () => {
           
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <FormControl fullWidth>
-              <InputLabel>{t('Select Coin')}</InputLabel>
               <Select
                 value={newCoin.id}
-                onChange={(e) => {
-                  const selected = popularCoins.find(c => c.id === e.target.value);
-                  setNewCoin({
-                    id: selected.id,
-                    name: selected.name,
-                    symbol: selected.symbol,
-                    amount: newCoin.amount
-                  });
+                onChange={handleCoinSelect}
+                displayEmpty
+                renderValue={(selected) => {
+                  if (selected === '') {
+                    return <em>{t('Select Coin')}</em>;
+                  }
+                  const coin = popularCoins.find(c => c.id === selected);
+                  return `${coin.name} (${coin.symbol})`;
                 }}
               >
+                <MenuItem disabled value="">
+                  <em>{t('Select Coin')}</em>
+                </MenuItem>
                 {popularCoins.map((coin) => (
                   <MenuItem key={coin.id} value={coin.id}>
                     {coin.name} ({coin.symbol})
@@ -183,21 +234,28 @@ const Portfolio = () => {
             
             <TextField
               label={t('Amount')}
-              type="number"
+              type="text"
               value={newCoin.amount}
-              onChange={(e) => setNewCoin({ ...newCoin, amount: e.target.value })}
-              InputProps={{ inputProps: { min: 0, step: 0.00000001 } }}
+              onChange={handleAmountChange}
+              disabled={!newCoin.id}
+              InputProps={{ 
+                inputProps: { 
+                  min: 0, 
+                  step: 0.00000001,
+                  pattern: '[0-9]*\\.?[0-9]*'
+                } 
+              }}
               fullWidth
             />
             
             <Button 
               variant="contained" 
               onClick={handleAddCoin}
-              disabled={!newCoin.amount}
+              disabled={!newCoin.id || !newCoin.amount || parseFloat(newCoin.amount) <= 0}
               fullWidth
               sx={{ mt: 1 }}
             >
-              {t('Add Coin')}
+              {coins.some(c => c.id === newCoin.id) ? t('Update Amount') : t('Add Coin')}
             </Button>
           </Box>
         </Paper>
