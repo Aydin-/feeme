@@ -11,7 +11,14 @@ export const MempoolStats = ({ mempoolStats }) => {
   return (
     <Card className="glass-card">
       <CardContent sx={{ p: 2 }}>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" sx={{ 
+          background: 'linear-gradient(45deg, #f2a900 30%, #ff8e3c 90%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          fontWeight: 600,
+          fontSize: '1.25rem',
+          mb: 3
+        }}>
           {t('mempoolStats')}
         </Typography>
         {mempoolStats ? (

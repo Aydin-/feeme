@@ -40,7 +40,14 @@ export const FeeCalculator = ({
   return (
     <Card className="glass-card" sx={{ mb: 4 }}>
       <CardContent>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" sx={{ 
+          background: 'linear-gradient(45deg, #f2a900 30%, #ff8e3c 90%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          fontWeight: 600,
+          fontSize: '1.25rem',
+          mb: 3
+        }}>
           {t('calculateFee')}
         </Typography>
 

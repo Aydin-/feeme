@@ -21,7 +21,14 @@ export const BlockchainInfo = ({ blockchainInfo }) => {
   return (
     <Card className="glass-card">
       <CardContent sx={{ p: 2 }}>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" sx={{ 
+          background: 'linear-gradient(45deg, #f2a900 30%, #ff8e3c 90%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          fontWeight: 600,
+          fontSize: '1.25rem',
+          mb: 3
+        }}>
           {t('blockchainInfo')}
         </Typography>
         <Grid container spacing={3} alignItems="center">
