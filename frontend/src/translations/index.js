@@ -69,7 +69,7 @@ export const translations = {
     // Footer
     dataProvided: 'Data provided by',
     stayingSovereign: 'stay sovereign',
-    designedBy: 'designed and developed by Aydin Gungordu',
+    designedBy: 'Designed and developed by Aydin Gungordu',
     
     // Wallet descriptions
     walletDescriptions: {
@@ -173,7 +173,7 @@ export const translations = {
     // Footer
     dataProvided: 'Data levert av',
     stayingSovereign: 'forbli suveren',
-    designedBy: 'designet og utviklet av Aydin Gungordu',
+    designedBy: 'Designet og utviklet av Aydin Gungordu',
     
     // Wallet descriptions
     walletDescriptions: {
