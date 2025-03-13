@@ -20,11 +20,16 @@ const Web3Provider = ({ children }) => {
       setIsConnecting(true);
       setError(null);
 
-      // Request account access
+      console.log('Requesting account access...');
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      console.log('Accounts received:', accounts);
+
+      console.log('Creating provider...');
       const provider = new BrowserProvider(window.ethereum);
+      console.log('Getting network...');
       const network = await provider.getNetwork();
       
+      console.log('Setting account and chainId...');
       setAccount(accounts[0]);
       setChainId(Number(network.chainId));
       setProvider(provider);
@@ -38,6 +43,7 @@ const Web3Provider = ({ children }) => {
 
   const disconnect = () => {
     try {
+      console.log('Disconnecting wallet...');
       setError(null);
       setAccount(null);
       setChainId(null);
@@ -48,24 +54,57 @@ const Web3Provider = ({ children }) => {
     }
   };
 
+  // Check if already connected
+  useEffect(() => {
+    const checkConnection = async () => {
+      if (window.ethereum) {
+        try {
+          console.log('Checking existing connection...');
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          if (accounts.length > 0) {
+            console.log('Found existing connection:', accounts[0]);
+            const provider = new BrowserProvider(window.ethereum);
+            const network = await provider.getNetwork();
+            
+            setAccount(accounts[0]);
+            setChainId(Number(network.chainId));
+            setProvider(provider);
+          }
+        } catch (error) {
+          console.error('Error checking connection:', error);
+        }
+      }
+    };
+
+    checkConnection();
+  }, []);
+
   // Listen for account changes
   useEffect(() => {
     if (window.ethereum) {
-      window.ethereum.on('accountsChanged', (accounts) => {
+      console.log('Setting up event listeners...');
+      
+      const handleAccountsChanged = (accounts) => {
+        console.log('Accounts changed:', accounts);
         if (accounts.length === 0) {
           disconnect();
         } else {
           setAccount(accounts[0]);
         }
-      });
+      };
 
-      window.ethereum.on('chainChanged', (chainId) => {
+      const handleChainChanged = (chainId) => {
+        console.log('Chain changed:', chainId);
         setChainId(Number(chainId));
-      });
+      };
+
+      window.ethereum.on('accountsChanged', handleAccountsChanged);
+      window.ethereum.on('chainChanged', handleChainChanged);
 
       return () => {
-        window.ethereum.removeListener('accountsChanged', () => {});
-        window.ethereum.removeListener('chainChanged', () => {});
+        console.log('Cleaning up event listeners...');
+        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+        window.ethereum.removeListener('chainChanged', handleChainChanged);
       };
     }
   }, []);
