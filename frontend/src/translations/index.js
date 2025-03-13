@@ -44,8 +44,7 @@ export const translations = {
       '7d': '7 Days',
       '30d': '30 Days',
       '90d': '90 Days',
-      '365d': '1 Year',
-      '1825d': '5 Years'
+      '365d': '1 Year'
     },
     
     // Mempool Stats
@@ -161,8 +160,7 @@ export const translations = {
       '7d': '7 Dager',
       '30d': '30 Dager',
       '90d': '90 Dager',
-      '365d': '1 År',
-      '1825d': '5 År'
+      '365d': '1 År'
     },
     
     // Mempool Stats

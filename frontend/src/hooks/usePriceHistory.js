@@ -39,10 +39,10 @@ export const usePriceHistory = (timespan = '365d') => {
           '7d': 7,
           '30d': 30,
           '90d': 90,
-          '365d': 365,
-          '1825d': 1825
+          '365d': 365
         }[timespan];
 
+        // Make a single API call with the appropriate days parameter
         const response = await axios.get(
           `${COINGECKO_API_URL}/coins/bitcoin/market_chart`,
           {
@@ -66,9 +66,28 @@ export const usePriceHistory = (timespan = '365d') => {
         const timestamps = data.map(([timestamp]) => new Date(timestamp));
         const prices = data.map(([, price]) => price);
 
+        // Sample data based on timespan to maintain reasonable number of points
+        let sampledTimestamps, sampledPrices;
+        
+        if (timespan === '1d') {
+          // 24 points for 24h (1 per hour)
+          const step = Math.max(1, Math.floor(prices.length / 24));
+          sampledTimestamps = timestamps.filter((_, i) => i % step === 0);
+          sampledPrices = prices.filter((_, i) => i % step === 0);
+        } else if (timespan === '7d') {
+          // 84 points for 7 days (12 per day)
+          const step = Math.max(1, Math.floor(prices.length / 84));
+          sampledTimestamps = timestamps.filter((_, i) => i % step === 0);
+          sampledPrices = prices.filter((_, i) => i % step === 0);
+        } else {
+          // For longer periods, use daily data points
+          sampledTimestamps = timestamps;
+          sampledPrices = prices;
+        }
+
         const newData = {
-          timestamps,
-          prices,
+          timestamps: sampledTimestamps,
+          prices: sampledPrices,
           loading: false,
           error: null
         };

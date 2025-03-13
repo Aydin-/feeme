@@ -85,7 +85,13 @@ export const PriceHistory = () => {
             size: 11
           },
           padding: 8,
-          maxTicksLimit: 8
+          maxTicksLimit: timespan === '1d' ? 12 : 8,
+          callback: function(value, index, values) {
+            if (timespan === '1d') {
+              return new Date(timestamps[index]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+            return new Date(timestamps[index]).toLocaleDateString();
+          }
         }
       },
       y: {

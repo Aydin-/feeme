@@ -20,7 +20,7 @@ body {
   background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, var(--darker-bg) 100%);
   min-height: 100vh;
   color: var(--text-primary);
-  font-family: 'Roboto', 'Segoe UI', sans-serif;
+  font-family: 'Inter', 'Roboto', sans-serif;
 }
 
 /* Animated background with subtle Bitcoin patterns */
@@ -64,6 +64,24 @@ body {
   color: var(--text-secondary) !important;
   font-weight: 300 !important;
   letter-spacing: 1px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Chart label styling */
+.chart-label {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  color: var(--text-secondary) !important;
+  fill: var(--text-secondary) !important;
+}
+
+.chart-value {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  fill: var(--text-primary) !important;
 }
 
 /* Fee displays */
@@ -98,13 +116,15 @@ body {
   font-size: 0.9rem !important;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
 }
 
 .fee-value {
   color: var(--text-primary) !important;
   font-size: 1.4rem !important;
   font-weight: 700 !important;
-  font-family: 'Roboto Mono', monospace !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 /* Currency conversion styling */
@@ -187,6 +207,7 @@ body {
 /* Typography colors */
 .MuiTypography-root {
   color: var(--text-primary) !important;
+  font-family: 'Inter', sans-serif !important;
 }
 
 .MuiTypography-colorTextSecondary {
@@ -325,8 +346,9 @@ body {
 }
 
 .gauge-chart text {
-  font-family: 'Roboto Mono', monospace !important;
+  font-family: 'Inter', sans-serif !important;
   font-size: 1rem !important;
+  font-weight: 500 !important;
 }
 
 /* Auto-update indicator */
