@@ -32,6 +32,28 @@ const popularCoins = [
   { id: 'chainlink', name: 'Chainlink', symbol: 'LINK' }
 ];
 
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+const CACHE_KEY = 'coin_prices_cache';
+
+const getCachedPrices = () => {
+  const cached = localStorage.getItem(CACHE_KEY);
+  if (!cached) return null;
+  
+  const { prices, timestamp } = JSON.parse(cached);
+  if (Date.now() - timestamp > CACHE_DURATION) {
+    localStorage.removeItem(CACHE_KEY);
+    return null;
+  }
+  return prices;
+};
+
+const setCachedPrices = (prices) => {
+  localStorage.setItem(CACHE_KEY, JSON.stringify({
+    prices,
+    timestamp: Date.now()
+  }));
+};
+
 const Portfolio = () => {
   const { t } = useLanguage();
   const [coins, setCoins] = useState([]);
@@ -48,6 +70,13 @@ const Portfolio = () => {
     const fetchPrices = async () => {
       if (coins.length === 0) return;
       
+      // Check cache first
+      const cachedPrices = getCachedPrices();
+      if (cachedPrices) {
+        setPrices(cachedPrices);
+        return;
+      }
+      
       setLoading(true);
       try {
         const coinIds = coins.map(coin => coin.id).join(',');
@@ -56,8 +85,14 @@ const Portfolio = () => {
         );
         const data = await response.json();
         setPrices(data);
+        setCachedPrices(data);
       } catch (error) {
         console.error('Error fetching prices:', error);
+        // If API fails, try to use cached data even if expired
+        const cachedPrices = getCachedPrices();
+        if (cachedPrices) {
+          setPrices(cachedPrices);
+        }
       } finally {
         setLoading(false);
       }
