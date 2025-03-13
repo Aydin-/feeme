@@ -6,7 +6,7 @@ export const translations = {
     explorer: 'Explorer',
     
     // Navigation
-    Fees: 'Fees',
+    Fees: 'Fee Calculator',
     'Price History': 'Price History',
     'BTC Price': 'BTC Price',
     
@@ -107,6 +107,14 @@ export const translations = {
 
     // Loading states
     loading: 'Loading...',
+
+    // New translations
+    'Portfolio': 'Portfolio',
+    'Coin Name': 'Coin Name',
+    'Amount': 'Amount',
+    'Add Coin': 'Add Coin',
+    'Your Holdings': 'Your Holdings',
+    'Total Value': 'Total Value'
   },
   no: {
     // Header
@@ -115,7 +123,7 @@ export const translations = {
     explorer: 'Utforsker',
     
     // Navigation
-    Fees: 'Gebyr',
+    Fees: 'Gebyrkalkulator',
     'Price History': 'Prishistorikk',
     'BTC Price': 'BTC Pris',
     
@@ -216,5 +224,13 @@ export const translations = {
 
     // Loading states
     loading: 'Laster...',
+
+    // New translations
+    'Portfolio': 'Portefølje',
+    'Coin Name': 'Myntnavn',
+    'Amount': 'Mengde',
+    'Add Coin': 'Legg til mynt',
+    'Your Holdings': 'Dine beholdninger',
+    'Total Value': 'Total verdi'
   }
 }; 

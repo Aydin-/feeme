@@ -18,6 +18,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { useTheme } from './contexts/ThemeContext';
 import { PriceHistory } from './components/PriceHistory';
 import { Navigation } from './components/Navigation';
+import Portfolio from './components/Portfolio';
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState('fees');
@@ -295,6 +296,8 @@ function AppContent() {
                   </Grid>
                 </Grid>
               </>
+            ) : currentPage === 'portfolio' ? (
+              <Portfolio />
             ) : (
               <PriceHistory />
             )}

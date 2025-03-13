@@ -5,6 +5,8 @@ import { useTheme as useAppTheme } from '../contexts/ThemeContext';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import MenuIcon from '@mui/icons-material/Menu';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 export const Navigation = ({ currentPage, onPageChange }) => {
   const { t } = useLanguage();
@@ -48,22 +50,35 @@ export const Navigation = ({ currentPage, onPageChange }) => {
       }
     }}>
       <Button
-        startIcon={<ReceiptIcon />}
+        variant={currentPage === 'fees' ? 'contained' : 'text'}
         onClick={() => {
           onPageChange('fees');
           if (isMobile) setDrawerOpen(false);
         }}
-        className={currentPage === 'fees' ? 'active' : ''}
+        startIcon={<CalculateIcon />}
+        fullWidth
       >
         {t('Fees')}
       </Button>
       <Button
-        startIcon={<ShowChartIcon />}
+        variant={currentPage === 'portfolio' ? 'contained' : 'text'}
         onClick={() => {
-          onPageChange('price');
+          onPageChange('portfolio');
           if (isMobile) setDrawerOpen(false);
         }}
-        className={currentPage === 'price' ? 'active' : ''}
+        startIcon={<AccountBalanceWalletIcon />}
+        fullWidth
+      >
+        {t('Portfolio')}
+      </Button>
+      <Button
+        variant={currentPage === 'price-history' ? 'contained' : 'text'}
+        onClick={() => {
+          onPageChange('price-history');
+          if (isMobile) setDrawerOpen(false);
+        }}
+        startIcon={<ShowChartIcon />}
+        fullWidth
       >
         {t('Price History')}
       </Button>
