@@ -17,7 +17,6 @@ import {
   Link
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { BitcoinLogo } from '../icons';
 import { ExplorerDrawer } from './ExplorerDrawer';
 import { LanguageSelector } from './LanguageSelector';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -68,7 +67,6 @@ export const Header = () => {
       >
         <Toolbar className="header-toolbar">
           <Box className="header-title-container">
-            <BitcoinLogo style={{ width: 40, height: 40, marginRight: 2 }} />
             <Typography 
               variant="h5" 
               className="header-title"
