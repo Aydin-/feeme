@@ -114,13 +114,12 @@ export function Explorer() {
                 <TableCell>{t('time')}</TableCell>
                 <TableCell>{t('size')}</TableCell>
                 <TableCell>{t('transactions')}</TableCell>
-                <TableCell>{t('feeRate')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={5} align="center">
+                  <TableCell colSpan={4} align="center">
                     <CircularProgress size={24} />
                   </TableCell>
                 </TableRow>
@@ -139,7 +138,6 @@ export function Explorer() {
                     <TableCell>{formatTime(block.timestamp)}</TableCell>
                     <TableCell>{formatNumber(block.size)} bytes</TableCell>
                     <TableCell>{formatNumber(block.tx_count)}</TableCell>
-                    <TableCell>{formatFeeRate(block.fee_rate)} sats/vB</TableCell>
                   </TableRow>
                 ))
               )}

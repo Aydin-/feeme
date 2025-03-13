@@ -93,11 +93,11 @@ export function Navigation({ currentPage, onPageChange }) {
         <IconButton
           color="inherit"
           aria-label="open drawer"
-          edge="start"
+          edge="end"
           onClick={handleDrawerToggle}
           sx={{ 
             position: 'fixed',
-            left: 16,
+            right: 16,
             top: 16,
             zIndex: 1200,
             bgcolor: 'background.paper',
@@ -110,7 +110,7 @@ export function Navigation({ currentPage, onPageChange }) {
         </IconButton>
         <Drawer
           variant="temporary"
-          anchor="left"
+          anchor="right"
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
@@ -122,7 +122,7 @@ export function Navigation({ currentPage, onPageChange }) {
               boxSizing: 'border-box', 
               width: 240,
               bgcolor: 'background.paper',
-              borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+              borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
             },
           }}
         >
