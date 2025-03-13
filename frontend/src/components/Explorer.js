@@ -53,13 +53,12 @@ export function Explorer() {
             .filter(tx => {
               // Check if the transaction has the required properties
               return tx && 
-                     typeof tx.weight === 'number' && 
-                     typeof tx.fee_rate === 'number' && 
+                     typeof tx.vsize === 'number' && 
+                     typeof tx.fee === 'number' && 
                      typeof tx.value === 'number';
             })
             .slice(0, 10);
           
-          console.log('Valid transactions:', validTransactions); // Debug log
           setTransactions(validTransactions);
         }
       } catch (error) {
@@ -86,9 +85,9 @@ export function Explorer() {
     return value.toLocaleString();
   };
 
-  const formatFeeRate = (rate) => {
-    if (typeof rate !== 'number') return 'N/A';
-    return rate.toFixed(1);
+  const formatFeeRate = (fee, vsize) => {
+    if (typeof fee !== 'number' || typeof vsize !== 'number') return 'N/A';
+    return (fee / vsize).toFixed(1);
   };
 
   return (
@@ -155,7 +154,7 @@ export function Explorer() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>{t('time')}</TableCell>
+                <TableCell>{t('txid')}</TableCell>
                 <TableCell>{t('size')}</TableCell>
                 <TableCell>{t('feeRate')}</TableCell>
                 <TableCell>{t('value')}</TableCell>
@@ -177,9 +176,23 @@ export function Explorer() {
               ) : (
                 transactions.map((tx) => (
                   <TableRow key={tx.txid}>
-                    <TableCell>{formatTime(tx.first_seen)}</TableCell>
-                    <TableCell>{formatNumber(tx.weight)} WU</TableCell>
-                    <TableCell>{formatFeeRate(tx.fee_rate)} sats/vB</TableCell>
+                    <TableCell>
+                      <Link 
+                        href={`https://mempool.space/tx/${tx.txid}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{ 
+                          maxWidth: '200px',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {tx.txid.slice(0, 8)}...{tx.txid.slice(-8)}
+                      </Link>
+                    </TableCell>
+                    <TableCell>{formatNumber(tx.vsize)} vB</TableCell>
+                    <TableCell>{formatFeeRate(tx.fee, tx.vsize)} sats/vB</TableCell>
                     <TableCell>{formatNumber(tx.value)} sats</TableCell>
                   </TableRow>
                 ))
