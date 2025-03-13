@@ -9,6 +9,7 @@ import { HashratePower } from './components/HashratePower';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Premium } from './components/Premium';
+import { Inspiration } from './components/Inspiration';
 import { useNetworkStatus } from './hooks/useNetworkStatus';
 import { useMempoolStats } from './hooks/useMempoolStats';
 import { useBlockchainInfo } from './hooks/useBlockchainInfo';
@@ -291,6 +292,8 @@ function AppContent() {
               <Portfolio />
             ) : currentPage === 'premium' ? (
               <Premium />
+            ) : currentPage === 'inspiration' ? (
+              <Inspiration />
             ) : (
               <PriceHistory />
             )}

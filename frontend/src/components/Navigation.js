@@ -5,6 +5,7 @@ import CalculateIcon from '@mui/icons-material/Calculate';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import StarIcon from '@mui/icons-material/Star';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 
 export function Navigation({ currentPage, onPageChange }) {
   const { t } = useLanguage();
@@ -13,6 +14,7 @@ export function Navigation({ currentPage, onPageChange }) {
     { id: 'fees', label: t('Fees'), icon: <CalculateIcon /> },
     { id: 'portfolio', label: t('Portfolio'), icon: <AccountBalanceWalletIcon /> },
     { id: 'price-history', label: t('Price History'), icon: <TimelineIcon /> },
+    { id: 'inspiration', label: t('Inspiration'), icon: <LightbulbIcon /> },
     { id: 'premium', label: t('Premium'), icon: <StarIcon /> }
   ];
 

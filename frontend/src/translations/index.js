@@ -141,7 +141,16 @@ export const translations = {
     'Real-time Data': 'Real-time Data',
     'Get instant access to real-time market data, network statistics, and historical trends.': 'Get instant access to real-time market data, network statistics, and historical trends.',
     'Priority Support': 'Priority Support',
-    'Receive dedicated support and early access to new features as they become available.': 'Receive dedicated support and early access to new features as they become available.'
+    'Receive dedicated support and early access to new features as they become available.': 'Receive dedicated support and early access to new features as they become available.',
+    'Bitcoin Inspiration': 'Bitcoin Inspiration',
+    'Discover the latest insights, news, and discussions from the Bitcoin community': 'Discover the latest insights, news, and discussions from the Bitcoin community',
+    'Tweets': 'Tweets',
+    'Articles': 'Articles',
+    'Videos': 'Videos',
+    'View': 'View',
+    'Save for later': 'Save for later',
+    'Remove from saved': 'Remove from saved',
+    'Share': 'Share'
   },
   no: {
     // Header
@@ -285,6 +294,15 @@ export const translations = {
     'Real-time Data': 'Sanntidsdata',
     'Get instant access to real-time market data, network statistics, and historical trends.': 'Få umiddelbar tilgang til sanntids markedsdata, nettverksstatistikk og historiske trender.',
     'Priority Support': 'Prioritert Støtte',
-    'Receive dedicated support and early access to new features as they become available.': 'Motta dedikert støtte og tidlig tilgang til nye funksjoner når de blir tilgjengelige.'
+    'Receive dedicated support and early access to new features as they become available.': 'Motta dedikert støtte og tidlig tilgang til nye funksjoner når de blir tilgjengelige.',
+    'Bitcoin Inspiration': 'Bitcoin Inspirasjon',
+    'Discover the latest insights, news, and discussions from the Bitcoin community': 'Oppdag de nyeste innsiktene, nyhetene og diskusjonene fra Bitcoin-samfunnet',
+    'Tweets': 'Tweets',
+    'Articles': 'Artikler',
+    'Videos': 'Videoer',
+    'View': 'Vis',
+    'Save for later': 'Lagre for senere',
+    'Remove from saved': 'Fjern fra lagrede',
+    'Share': 'Del'
   }
 }; 
