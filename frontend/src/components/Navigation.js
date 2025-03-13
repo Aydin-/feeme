@@ -2,8 +2,9 @@ import React from 'react';
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper } from '@mui/material';
 import { useLanguage } from '../contexts/LanguageContext';
 import CalculateIcon from '@mui/icons-material/Calculate';
+import TimelineIcon from '@mui/icons-material/Timeline';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import ShowChartIcon from '@mui/icons-material/ShowChart';
+import StarIcon from '@mui/icons-material/Star';
 
 export function Navigation({ currentPage, onPageChange }) {
   const { t } = useLanguage();
@@ -11,7 +12,8 @@ export function Navigation({ currentPage, onPageChange }) {
   const menuItems = [
     { id: 'fees', label: t('Fees'), icon: <CalculateIcon /> },
     { id: 'portfolio', label: t('Portfolio'), icon: <AccountBalanceWalletIcon /> },
-    { id: 'price-history', label: t('Price History'), icon: <ShowChartIcon /> },
+    { id: 'price-history', label: t('Price History'), icon: <TimelineIcon /> },
+    { id: 'premium', label: t('Premium'), icon: <StarIcon /> }
   ];
 
   return (
