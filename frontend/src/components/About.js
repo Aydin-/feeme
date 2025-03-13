@@ -23,9 +23,14 @@ export function About() {
           {t('about.description')}
         </Typography>
         <Typography variant="body1" paragraph>
-          {t('about.features')}
+          {t('about.features').split('\n').map((line, index) => (
+            <React.Fragment key={index}>
+              {line}
+              <br />
+            </React.Fragment>
+          ))}
         </Typography>
-        <Typography variant="body1">
+        <Typography variant="body1" paragraph>
           {t('about.dataSource')}
         </Typography>
       </Paper>

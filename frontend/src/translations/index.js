@@ -13,7 +13,12 @@ export const translations = {
     // About dialog
     about: {
       description: 'Bitcoin Fee Estimator is a professional-grade tool designed to help you calculate accurate transaction fees across different wallet implementations. Our estimator provides real-time data from the Bitcoin network and adjusts calculations based on specific wallet fee strategies.',
-      features: 'Features:\n• Real-time fee estimates from mempool.space\n• Support for popular wallets including Coinbase, Electrum, BlueWallet, and Exodus\n• Network hashrate monitoring\n• Mempool statistics\n• Blockchain information',
+      features: `Features:
+• Real-time fee estimates from mempool.space
+• Support for popular wallets including Coinbase, Electrum, BlueWallet, and Exodus
+• Network hashrate monitoring
+• Mempool statistics
+• Blockchain information`,
       dataSource: 'Data is sourced from mempool.space API and updated in real-time to ensure accuracy. This tool is ideal for both newcomers and experienced Bitcoin users looking to optimize their transaction fees.'
     },
     
@@ -198,7 +203,12 @@ export const translations = {
     // About dialog
     about: {
       description: 'Bitcoin Gebyr Kalkulator er et profesjonelt verktøy designet for å hjelpe deg med å beregne nøyaktige transaksjonsgebyrer på tvers av forskjellige lommebokimplementasjoner. Vår kalkulator gir sanntidsdata fra Bitcoin-nettverket og justerer beregninger basert på spesifikke lommebokstrategier.',
-      features: 'Funksjoner:\n• Sanntids gebyrestimater fra mempool.space\n• Støtte for populære lommebøker inkludert Coinbase, Electrum, BlueWallet og Exodus\n• Nettverks hashrate overvåking\n• Mempool statistikk\n• Blokkjede informasjon',
+      features: `Funksjoner:
+• Sanntids gebyrestimater fra mempool.space
+• Støtte for populære lommebøker inkludert Coinbase, Electrum, BlueWallet og Exodus
+• Nettverks hashrate overvåking
+• Mempool statistikk
+• Blokkjede informasjon`,
       dataSource: 'Data kommer fra mempool.space API og oppdateres i sanntid for å sikre nøyaktighet. Dette verktøyet er ideelt for både nybegynnere og erfarne Bitcoin-brukere som ønsker å optimalisere sine transaksjonsgebyrer.'
     },
     
