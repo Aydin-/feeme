@@ -50,20 +50,20 @@ body {
 
 /* Title styling */
 .app-title h1 {
-  font-size: 3.5rem !important;
+  font-family: 'Playfair Display', serif !important;
+  font-size: 4rem !important;
   font-weight: 700 !important;
-  background: linear-gradient(45deg, var(--bitcoin-gold), var(--bitcoin-orange));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--text-primary);
   margin-bottom: 1rem !important;
-  text-shadow: 0 0 30px rgba(242, 169, 0, 0.3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .subtitle {
   font-size: 1.2rem !important;
   color: var(--text-secondary) !important;
   font-weight: 300 !important;
+  letter-spacing: 1px;
 }
 
 /* Fee displays */
@@ -247,72 +247,22 @@ body {
   color: var(--bitcoin-gold) !important;
 }
 
-/* Enhanced Bitcoin logo animation */
-.bitcoin-logo {
-  width: 64px;
-  height: 64px;
-  position: absolute;
-  top: -16px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-  0% {
-    transform: translateX(-50%) translateY(0px);
-  }
-  50% {
-    transform: translateX(-50%) translateY(-30px);
-  }
-  100% {
-    transform: translateX(-50%) translateY(0px);
-  }
-}
-
 /* Spectacular title styling */
 .app-title {
   text-align: center;
   margin-bottom: 2rem;
   padding: 2rem 0;
-  position: relative;
 }
 
-.app-title::before {
-  content: "₿";
-  font-size: 10rem;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0.03;
-  z-index: -1;
-}
-
-.app-title::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 30%;
-  right: 30%;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--bitcoin-gold), transparent);
-  border-radius: 3px;
-}
-
-.app-title .subtitle {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  margin-top: 0.5rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  font-weight: 300;
+/* Remove the Bitcoin logo completely */
+.bitcoin-logo {
+  display: none;
 }
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .app-title h1 {
-    font-size: 2rem;
+    font-size: 2.5rem !important;
   }
   
   .app-title .subtitle {

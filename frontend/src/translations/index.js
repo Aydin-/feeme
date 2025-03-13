@@ -1,7 +1,7 @@
 export const translations = {
   en: {
     // Header
-    title: 'Bitcoin Fee Estimator',
+    title: 'Bitcoin Nomad',
     aboutMenu: 'About',
     explorer: 'Explorer',
     
@@ -118,7 +118,7 @@ export const translations = {
   },
   no: {
     // Header
-    title: 'Bitcoin Gebyr Kalkulator',
+    title: 'Bitcoin Nomad',
     aboutMenu: 'Om',
     explorer: 'Utforsker',
     

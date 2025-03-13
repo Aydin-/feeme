@@ -24,68 +24,27 @@ const animations = {
 // Styles
 const styles = {
   container: {
-    p: 3
+    p: 3,
+    maxWidth: '1200px',
+    margin: '0 auto',
   },
   titleContainer: {
     textAlign: 'center',
-    mb: 8,
-    position: 'relative',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: '300%',
-      height: '300%',
-      background: 'radial-gradient(circle, rgba(242,169,0,0.15) 0%, rgba(242,169,0,0) 70%)',
-      zIndex: -1,
-      animation: `${animations.float} 4s ease-in-out infinite`,
-    }
+    mb: 6,
   },
   title: {
     fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4.5rem' },
     fontWeight: 900,
-    background: 'linear-gradient(45deg, #f2a900 30%, #ffd700 50%, #f2a900 70%)',
-    backgroundSize: '200% auto',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    animation: `${animations.glow} 3s ease-in-out infinite, ${animations.shine} 3s linear infinite`,
+    color: 'text.primary',
     mb: 3,
     letterSpacing: '4px',
     textTransform: 'uppercase',
-    position: 'relative',
     textAlign: 'center',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      bottom: -15,
-      left: '50%',
-      transform: 'translateX(-50%)',
-      width: '80%',
-      height: '6px',
-      background: 'linear-gradient(90deg, transparent, #f2a900, #ffd700, #f2a900, transparent)',
-      borderRadius: '3px',
-      animation: `${animations.glow} 3s ease-in-out infinite`,
-    },
-    '&::after': {
-      content: '₿',
-      position: 'absolute',
-      top: -20,
-      right: -20,
-      fontSize: '2rem',
-      color: '#f2a900',
-      animation: `${animations.float} 4s ease-in-out infinite`,
-      animationDelay: '1s',
-    }
   },
   subtitle: {
     color: 'text.secondary',
     maxWidth: '800px',
     margin: '0 auto',
-    animation: `${animations.float} 4s ease-in-out infinite`,
-    animationDelay: '0.5s',
-    textShadow: '0 0 10px rgba(242,169,0,0.3)',
     fontWeight: 500,
   },
   card: {

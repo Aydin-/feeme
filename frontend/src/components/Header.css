@@ -21,16 +21,11 @@
   font-size: 1.2rem;
   font-weight: 700;
   font-family: "Playfair Display", serif;
-  background: linear-gradient(45deg, rgba(242, 169, 0, 0.8) 30%, rgba(255, 215, 0, 0.8) 50%, rgba(242, 169, 0, 0.8) 70%);
   background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: glow 4s ease-in-out infinite, shine 4s linear infinite;
   letter-spacing: 1px;
   text-transform: uppercase;
   position: relative;
   text-align: left;
-  backdrop-filter: blur(8px);
 }
 
 .header-title::before {
@@ -42,7 +37,6 @@
   height: 2px;
   background: linear-gradient(90deg, rgba(242, 169, 0, 0.3), rgba(255, 215, 0, 0.3), rgba(242, 169, 0, 0.3));
   border-radius: 1px;
-  animation: glow 4s ease-in-out infinite;
 }
 
 .header-title::after {
@@ -52,8 +46,6 @@
   right: -8px;
   font-size: 1.2rem;
   color: rgba(242, 169, 0, 0.8);
-  animation: float 4s ease-in-out infinite;
-  animation-delay: 1s;
 }
 
 /* Responsive Font Sizes */
