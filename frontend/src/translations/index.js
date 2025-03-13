@@ -113,7 +113,9 @@ export const translations = {
     'Amount': 'Amount',
     'Add Coin': 'Add Coin',
     'Your Holdings': 'Your Holdings',
-    'Total Value': 'Total Value'
+    'Total Value': 'Total Value',
+    switchToDarkMode: 'Switch to Dark Mode',
+    switchToLightMode: 'Switch to Light Mode'
   },
   no: {
     // Header
@@ -229,6 +231,8 @@ export const translations = {
     'Amount': 'Mengde',
     'Add Coin': 'Legg til mynt',
     'Your Holdings': 'Dine beholdninger',
-    'Total Value': 'Total verdi'
+    'Total Value': 'Total verdi',
+    switchToDarkMode: 'Bytt til Mørkt Modus',
+    switchToLightMode: 'Bytt til Lyst Modus'
   }
 }; 
