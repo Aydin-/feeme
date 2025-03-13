@@ -8,6 +8,7 @@ export const translations = {
     // Navigation
     Fees: 'Fees',
     'Price History': 'Price History',
+    'BTC Price': 'BTC Price',
     
     // About dialog
     about: {
@@ -39,12 +40,12 @@ export const translations = {
     // Hashrate
     networkHashrate: 'Network Hashrate',
     timeOptions: {
-      '1w': '1 Week',
-      '1m': '1 Month',
-      '3m': '3 Months',
-      '1y': '1 Year',
-      '5y': '5 Years',
-      all: 'All Time'
+      '1d': '24 Hours',
+      '7d': '7 Days',
+      '30d': '30 Days',
+      '90d': '90 Days',
+      '365d': '1 Year',
+      '1825d': '5 Years'
     },
     
     // Mempool Stats
@@ -115,7 +116,8 @@ export const translations = {
     
     // Navigation
     Fees: 'Gebyr',
-    'Pris Historie': 'Pris Historie',
+    'Price History': 'Prishistorikk',
+    'BTC Price': 'BTC Pris',
     
     // About dialog
     about: {
@@ -147,12 +149,12 @@ export const translations = {
     // Hashrate
     networkHashrate: 'Nettverks Hashrate',
     timeOptions: {
-      '1w': '1 Uke',
-      '1m': '1 Måned',
-      '3m': '3 Måneder',
-      '1y': '1 År',
-      '5y': '5 År',
-      all: 'All Tid'
+      '1d': '24 Timer',
+      '7d': '7 Dager',
+      '30d': '30 Dager',
+      '90d': '90 Dager',
+      '365d': '1 År',
+      '1825d': '5 År'
     },
     
     // Mempool Stats

@@ -1,14 +1,17 @@
-import React from 'react';
-import { Box, Button, useTheme } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Button, useTheme, useMediaQuery, Drawer, IconButton } from '@mui/material';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme as useAppTheme } from '../contexts/ThemeContext';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
+import MenuIcon from '@mui/icons-material/Menu';
 
 export const Navigation = ({ currentPage, onPageChange }) => {
   const { t } = useLanguage();
   const { isDarkMode } = useAppTheme();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const buttonStyle = {
     color: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
@@ -23,14 +26,14 @@ export const Navigation = ({ currentPage, onPageChange }) => {
     },
   };
 
-  return (
+  const navigationContent = (
     <Box sx={{ 
       display: 'flex', 
       flexDirection: 'column',
       gap: 2,
-      mr: 4,
-      width: '200px',
+      width: isMobile ? '100%' : '200px',
       flexShrink: 0,
+      p: isMobile ? 2 : 0,
       '& .MuiButton-root': {
         textTransform: 'none',
         fontWeight: 500,
@@ -46,18 +49,66 @@ export const Navigation = ({ currentPage, onPageChange }) => {
     }}>
       <Button
         startIcon={<ReceiptIcon />}
-        onClick={() => onPageChange('fees')}
+        onClick={() => {
+          onPageChange('fees');
+          if (isMobile) setDrawerOpen(false);
+        }}
         className={currentPage === 'fees' ? 'active' : ''}
       >
         {t('Fees')}
       </Button>
       <Button
         startIcon={<ShowChartIcon />}
-        onClick={() => onPageChange('price')}
+        onClick={() => {
+          onPageChange('price');
+          if (isMobile) setDrawerOpen(false);
+        }}
         className={currentPage === 'price' ? 'active' : ''}
       >
         {t('Price History')}
       </Button>
     </Box>
   );
+
+  if (isMobile) {
+    return (
+      <>
+        <IconButton
+          onClick={() => setDrawerOpen(true)}
+          sx={{
+            position: 'fixed',
+            bottom: 20,
+            right: 20,
+            bgcolor: '#f2a900',
+            color: 'white',
+            '&:hover': {
+              bgcolor: '#e69a00',
+            },
+            zIndex: 1000,
+            boxShadow: '0 4px 12px rgba(242, 169, 0, 0.3)',
+          }}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Drawer
+          anchor="right"
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          PaperProps={{
+            sx: {
+              bgcolor: isDarkMode ? 'rgba(18, 18, 18, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+              backdropFilter: 'blur(10px)',
+              borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
+              width: '80%',
+              maxWidth: '300px',
+            }
+          }}
+        >
+          {navigationContent}
+        </Drawer>
+      </>
+    );
+  }
+
+  return navigationContent;
 }; 

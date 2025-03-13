@@ -3,21 +3,13 @@ import { Card, CardContent, Typography, Box, CircularProgress, ToggleButtonGroup
 import { Line } from 'react-chartjs-2';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { usePriceHistory } from '../hooks/usePriceHistory';
 
 export const PriceHistory = () => {
-  const [timespan, setTimespan] = useState('1y');
+  const [timespan, setTimespan] = useState('365d');
+  const { timestamps, prices, loading, error } = usePriceHistory(timespan);
   const { t } = useLanguage();
   const { isDarkMode } = useTheme();
-
-  // TODO: Replace with actual data fetching
-  const mockData = {
-    labels: Array.from({ length: 365 }, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      return date.toLocaleDateString();
-    }).reverse(),
-    prices: Array.from({ length: 365 }, () => Math.random() * 10000 + 30000)
-  };
 
   const handleTimespanChange = (event, newTimespan) => {
     if (newTimespan !== null) {
@@ -26,11 +18,11 @@ export const PriceHistory = () => {
   };
 
   const chartData = {
-    labels: mockData.labels,
+    labels: timestamps.map(t => t.toLocaleDateString()),
     datasets: [
       {
-        label: t('bitcoinPrice'),
-        data: mockData.prices,
+        label: t('BTC Price'),
+        data: prices,
         borderColor: '#f2a900',
         backgroundColor: 'rgba(242, 169, 0, 0.15)',
         fill: true,
@@ -125,7 +117,7 @@ export const PriceHistory = () => {
             fontWeight: 600,
             fontSize: '1.25rem'
           }}>
-            {t('bitcoinPrice')}
+            {t('BTC Price')}
           </Typography>
           <ToggleButtonGroup
             value={timespan}
@@ -155,7 +147,18 @@ export const PriceHistory = () => {
           </ToggleButtonGroup>
         </Box>
         <Box sx={{ flexGrow: 1, position: 'relative', height: '500px' }}>
-          <Line data={chartData} options={chartOptions} />
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+              <CircularProgress size={32} sx={{ color: '#f2a900' }} />
+              <Typography sx={{ ml: 2 }}>{t('loading')}</Typography>
+            </Box>
+          ) : error ? (
+            <Typography color="error" sx={{ textAlign: 'center', py: 3 }}>
+              {t('errors.dataNotAvailable')}
+            </Typography>
+          ) : (
+            <Line data={chartData} options={chartOptions} />
+          )}
         </Box>
       </CardContent>
     </Card>
