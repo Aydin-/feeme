@@ -20,6 +20,8 @@ import StarIcon from '@mui/icons-material/Star';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import MenuIcon from '@mui/icons-material/Menu';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import InfoIcon from '@mui/icons-material/Info';
+import ExploreIcon from '@mui/icons-material/Explore';
 
 export function Navigation({ currentPage, onPageChange }) {
   const { t } = useLanguage();
@@ -33,7 +35,9 @@ export function Navigation({ currentPage, onPageChange }) {
     { id: 'price-history', label: t('Price History'), icon: <TimelineIcon /> },
     { id: 'inspiration', label: t('Inspiration'), icon: <LightbulbIcon /> },
     { id: 'premium', label: t('Premium'), icon: <StarIcon /> },
-    { id: 'contribute', label: t('Contribute'), icon: <FavoriteIcon /> }
+    { id: 'contribute', label: t('Contribute'), icon: <FavoriteIcon /> },
+    { id: 'explorer', label: t('explorer'), icon: <ExploreIcon /> },
+    { id: 'about', label: t('aboutMenu'), icon: <InfoIcon /> }
   ];
 
   const handleDrawerToggle = () => {

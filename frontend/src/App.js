@@ -11,6 +11,8 @@ import { Header } from './components/Header';
 import { Premium } from './components/Premium';
 import { Inspiration } from './components/Inspiration';
 import { Contribute } from './components/Contribute';
+import { About } from './components/About';
+import { Explorer } from './components/Explorer';
 import { useNetworkStatus } from './hooks/useNetworkStatus';
 import { useMempoolStats } from './hooks/useMempoolStats';
 import { useBlockchainInfo } from './hooks/useBlockchainInfo';
@@ -299,6 +301,10 @@ function AppContent() {
               <Inspiration />
             ) : currentPage === 'contribute' ? (
               <Contribute />
+            ) : currentPage === 'about' ? (
+              <About />
+            ) : currentPage === 'explorer' ? (
+              <Explorer />
             ) : (
               <PriceHistory />
             )}
