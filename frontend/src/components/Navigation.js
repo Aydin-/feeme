@@ -52,7 +52,10 @@ export function Navigation({ currentPage, onPageChange }) {
   };
 
   const drawerContent = (
-    <List sx={{ width: '100%', pt: 2 }}>
+    <List sx={{ 
+      width: '100%', 
+      pt: { xs: 8, md: 2 }
+    }}>
       {menuItems.map((item) => (
         <ListItem key={item.id} disablePadding>
           <ListItemButton
