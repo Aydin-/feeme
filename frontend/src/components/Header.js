@@ -13,13 +13,15 @@ import {
   useMediaQuery,
   useTheme,
   Menu,
-  MenuItem
+  MenuItem,
+  Link
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { BitcoinLogo } from '../icons';
 import { ExplorerDrawer } from './ExplorerDrawer';
 import { LanguageSelector } from './LanguageSelector';
 import { useLanguage } from '../contexts/LanguageContext';
+import { ThemeToggle } from './ThemeToggle';
 
 export const Header = () => {
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -76,6 +78,7 @@ export const Header = () => {
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <ThemeToggle />
             <LanguageSelector />
             
             {isMobile ? (

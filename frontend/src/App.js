@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Typography, Alert, Grid } from '@mui/material';
+import { Container, Box, Typography, Alert, Grid, CssBaseline, ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material';
 import axios from 'axios';
 import { NetworkStatus } from './components/NetworkStatus';
 import { MempoolStats } from './components/MempoolStats';
@@ -14,8 +14,10 @@ import { useBlockchainInfo } from './hooks/useBlockchainInfo';
 import { DEFAULT_TX_SIZE, API_BASE_URL } from './config/constants';
 import { WALLET_CONFIGS } from './config/walletConfigs';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { useTheme } from './contexts/ThemeContext';
 
-function App() {
+function AppContent() {
   const [transactionSize, setTransactionSize] = useState(DEFAULT_TX_SIZE.toString());
   const [fees, setFees] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -37,6 +39,7 @@ function App() {
   const { networkStatus } = useNetworkStatus();
   const mempoolStats = useMempoolStats();
   const blockchainInfo = useBlockchainInfo();
+  const { isDarkMode } = useTheme();
 
   // Update fee history when new fees are fetched
   useEffect(() => {
@@ -164,9 +167,63 @@ function App() {
     }
   };
 
+  const theme = createTheme({
+    palette: {
+      mode: isDarkMode ? 'dark' : 'light',
+      primary: {
+        main: '#f2a900',
+      },
+      background: {
+        default: isDarkMode ? '#1a1a1a' : '#f5f5f5',
+        paper: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.8)',
+      },
+      text: {
+        primary: isDarkMode ? '#ffffff' : '#333333',
+        secondary: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
+      },
+    },
+    components: {
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            background: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(10px)',
+            border: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
+          },
+        },
+      },
+      MuiAppBar: {
+        styleOverrides: {
+          root: {
+            background: isDarkMode ? 'rgba(26, 26, 26, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(10px)',
+            borderBottom: `1px solid ${isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
+          },
+        },
+      },
+      MuiInputBase: {
+        styleOverrides: {
+          root: {
+            color: isDarkMode ? '#ffffff' : '#333333',
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)',
+            },
+          },
+        },
+      },
+    },
+  });
+
   return (
-    <LanguageProvider>
-      <div className="bg-pattern"></div>
+    <MuiThemeProvider theme={theme}>
+      <CssBaseline />
+      <div className="bg-pattern" style={{ 
+        backgroundColor: isDarkMode ? '#1a1a1a' : '#f5f5f5',
+        transition: 'background-color 0.3s ease'
+      }}></div>
       <Header />
       <Container 
         maxWidth="xl" 
@@ -227,7 +284,17 @@ function App() {
           <Footer />
         </Box>
       </Container>
-    </LanguageProvider>
+    </MuiThemeProvider>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
+    </ThemeProvider>
   );
 }
 
