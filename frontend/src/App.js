@@ -20,31 +20,28 @@ import { PriceHistory } from './components/PriceHistory';
 import { Navigation } from './components/Navigation';
 import Portfolio from './components/Portfolio';
 import { Web3ContextProvider } from './contexts/Web3Context';
+import './styles/bootstrap-theme.css';
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState('fees');
-  const [transactionSize, setTransactionSize] = useState(DEFAULT_TX_SIZE.toString());
+  const [transactionSize, setTransactionSize] = useState(DEFAULT_TX_SIZE);
+  const [selectedWallet, setSelectedWallet] = useState('mempool');
   const [fees, setFees] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [showFiat, setShowFiat] = useState(false);
-  const [exchangeRates, setExchangeRates] = useState({
-    btcToEur: null,
-    eurToNok: null
-  });
   const [fiatLoading, setFiatLoading] = useState(false);
+  const [exchangeRates, setExchangeRates] = useState(null);
+  const { isDarkMode } = useTheme();
   const [feeHistory, setFeeHistory] = useState({
     timestamps: [],
     fastFees: [],
     mediumFees: [],
     slowFees: []
   });
-  const [selectedWallet, setSelectedWallet] = useState('mempool');
 
   const { networkStatus } = useNetworkStatus();
   const mempoolStats = useMempoolStats();
   const blockchainInfo = useBlockchainInfo();
-  const { isDarkMode } = useTheme();
 
   // Update fee history when new fees are fetched
   useEffect(() => {
@@ -72,7 +69,7 @@ function AppContent() {
     if (!transactionSize) return;
 
     setLoading(true);
-    setError(null);
+    setFees(null);
 
     try {
       const response = await axios.post(`${API_BASE_URL}/calculate-fee`, {
@@ -114,7 +111,6 @@ function AppContent() {
       setFees(finalFees);
     } catch (err) {
       console.error('Fee calculation error:', err);
-      setError(`Failed to calculate fees: ${err.message}`);
       setFees(null);
     } finally {
       setLoading(false);
@@ -138,7 +134,7 @@ function AppContent() {
   };
 
   const convertBtcToFiat = (btcAmount) => {
-    if (!exchangeRates.btcToEur || !exchangeRates.eurToNok || !btcAmount) return null;
+    if (!exchangeRates || !btcAmount) return null;
     const eurAmount = btcAmount * exchangeRates.btcToEur;
     const nokAmount = eurAmount * exchangeRates.eurToNok;
     return {
@@ -157,7 +153,7 @@ function AppContent() {
         eurToNok: 11.42 // Example rate
       });
     } catch (err) {
-      setError('Failed to fetch exchange rates');
+      console.error('Failed to fetch exchange rates:', err);
     } finally {
       setFiatLoading(false);
     }
@@ -167,7 +163,7 @@ function AppContent() {
     const newShowFiat = !showFiat;
     setShowFiat(newShowFiat);
     
-    if (newShowFiat && (!exchangeRates.btcToEur || !exchangeRates.eurToNok)) {
+    if (newShowFiat && (!exchangeRates || !exchangeRates.btcToEur || !exchangeRates.eurToNok)) {
       await fetchExchangeRates();
     }
   };
@@ -250,17 +246,10 @@ function AppContent() {
           width: '100%'
         }}>
           <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
-          
           <Box sx={{ 
             flex: 1,
             minWidth: 0 // This prevents flex items from overflowing
           }}>
-            {error && (
-              <Alert severity="error" sx={{ mb: 3 }}>
-                {error}
-              </Alert>
-            )}
-
             {currentPage === 'fees' ? (
               <>
                 <FeeCalculator

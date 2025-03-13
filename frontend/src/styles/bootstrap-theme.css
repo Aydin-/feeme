@@ -1,0 +1,211 @@
+/* Import Bootstrap CSS */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* Custom Theme Variables */
+:root {
+  --primary-color: #f2a900;
+  --secondary-color: #ff8e3c;
+  --dark-bg: #1a1a1a;
+  --light-bg: #ffffff;
+  --dark-card: #2d2d2d;
+  --light-card: #f5f5f5;
+  --dark-text: #ffffff;
+  --light-text: #000000;
+  --dark-border: rgba(255, 255, 255, 0.1);
+  --light-border: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Mode Styles */
+[data-theme='dark'] {
+  --bg-color: var(--dark-bg);
+  --card-bg: var(--dark-card);
+  --text-color: var(--dark-text);
+  --border-color: var(--dark-border);
+}
+
+/* Light Mode Styles */
+[data-theme='light'] {
+  --bg-color: var(--light-bg);
+  --card-bg: var(--light-card);
+  --text-color: var(--light-text);
+  --border-color: var(--light-border);
+}
+
+/* Global Styles */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Card Styles */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Button Styles */
+.btn {
+  border-radius: 20px;
+  padding: 8px 20px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  border: none;
+  box-shadow: 0 2px 4px rgba(242, 169, 0, 0.2);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(242, 169, 0, 0.3);
+}
+
+/* Form Controls */
+.form-control {
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(242, 169, 0, 0.25);
+}
+
+/* Select Styles */
+.select {
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+/* List Styles */
+.list-group-item {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.list-group-item:hover {
+  background-color: rgba(242, 169, 0, 0.1);
+  transform: translateX(4px);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+/* Glass Effect */
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation */
+.nav-link {
+  color: var(--text-color);
+  border-radius: 12px;
+  padding: 8px 16px;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  background-color: rgba(242, 169, 0, 0.1);
+  color: var(--primary-color);
+}
+
+/* Table Styles */
+.table {
+  color: var(--text-color);
+}
+
+.table thead th {
+  border-bottom: 2px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.table td {
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Alert Styles */
+.alert {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Progress Bar */
+.progress {
+  height: 8px;
+  border-radius: 4px;
+  background-color: var(--border-color);
+}
+
+.progress-bar {
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .card {
+    margin-bottom: 1rem;
+  }
+  
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+} 
