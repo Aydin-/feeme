@@ -14,10 +14,12 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  CircularProgress
+  CircularProgress,
+  Grid
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useLanguage } from '../contexts/LanguageContext';
+import WalletHoldings from './WalletHoldings';
 
 const popularCoins = [
   { id: 'bitcoin', name: 'Bitcoin', symbol: '₿' },
@@ -190,145 +192,152 @@ const Portfolio = () => {
         {t('Portfolio')}
       </Typography>
       
-      <Box sx={{ display: 'flex', gap: 3 }}>
+      <Grid container spacing={3}>
         {/* Input Panel */}
-        <Paper 
-          sx={{ 
-            p: 2, 
-            mb: 3, 
-            flex: '0 0 300px',
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            {t('Add New Coin')}
-          </Typography>
-          
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <FormControl fullWidth>
-              <Select
-                value={newCoin.id}
-                onChange={handleCoinSelect}
-                displayEmpty
-                renderValue={(selected) => {
-                  if (selected === '') {
-                    return <em>{t('Select Coin')}</em>;
-                  }
-                  const coin = popularCoins.find(c => c.id === selected);
-                  return `${coin.name} (${coin.symbol})`;
-                }}
-              >
-                <MenuItem disabled value="">
-                  <em>{t('Select Coin')}</em>
-                </MenuItem>
-                {popularCoins.map((coin) => (
-                  <MenuItem key={coin.id} value={coin.id}>
-                    {coin.name} ({coin.symbol})
+        <Grid item xs={12} md={4}>
+          <Paper 
+            sx={{ 
+              p: 2, 
+              mb: 3,
+              background: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+            }}
+          >
+            <Typography variant="h6" gutterBottom>
+              {t('Add New Coin')}
+            </Typography>
+            
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <FormControl fullWidth>
+                <Select
+                  value={newCoin.id}
+                  onChange={handleCoinSelect}
+                  displayEmpty
+                  renderValue={(selected) => {
+                    if (selected === '') {
+                      return <em>{t('Select Coin')}</em>;
+                    }
+                    const coin = popularCoins.find(c => c.id === selected);
+                    return `${coin.name} (${coin.symbol})`;
+                  }}
+                >
+                  <MenuItem disabled value="">
+                    <em>{t('Select Coin')}</em>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            
-            <TextField
-              label={t('Amount')}
-              type="text"
-              value={newCoin.amount}
-              onChange={handleAmountChange}
-              disabled={!newCoin.id}
-              InputProps={{ 
-                inputProps: { 
-                  min: 0, 
-                  step: 0.00000001,
-                  pattern: '[0-9]*\\.?[0-9]*'
-                } 
-              }}
-              fullWidth
-            />
-            
-            <Button 
-              variant="contained" 
-              onClick={handleAddCoin}
-              disabled={!newCoin.id || !newCoin.amount || parseFloat(newCoin.amount) <= 0}
-              fullWidth
-              sx={{ mt: 1 }}
-            >
-              {coins.some(c => c.id === newCoin.id) ? t('Update Amount') : t('Add Coin')}
-            </Button>
-          </Box>
-        </Paper>
+                  {popularCoins.map((coin) => (
+                    <MenuItem key={coin.id} value={coin.id}>
+                      {coin.name} ({coin.symbol})
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              
+              <TextField
+                label={t('Amount')}
+                type="text"
+                value={newCoin.amount}
+                onChange={handleAmountChange}
+                disabled={!newCoin.id}
+                InputProps={{ 
+                  inputProps: { 
+                    min: 0, 
+                    step: 0.00000001,
+                    pattern: '[0-9]*\\.?[0-9]*'
+                  } 
+                }}
+                fullWidth
+              />
+              
+              <Button 
+                variant="contained" 
+                onClick={handleAddCoin}
+                disabled={!newCoin.id || !newCoin.amount || parseFloat(newCoin.amount) <= 0}
+                fullWidth
+                sx={{ mt: 1 }}
+              >
+                {coins.some(c => c.id === newCoin.id) ? t('Update Amount') : t('Add Coin')}
+              </Button>
+            </Box>
+          </Paper>
+        </Grid>
 
         {/* Coin List Panel */}
-        <Paper 
-          sx={{ 
-            p: 2, 
-            mb: 3, 
-            flex: 1,
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            {t('Your Holdings')}
-          </Typography>
-
-          {loading && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-              <CircularProgress size={24} />
-            </Box>
-          )}
-
-          {coins.length === 0 ? (
-            <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
-              {t('No coins added yet')}
+        <Grid item xs={12} md={8}>
+          <Paper 
+            sx={{ 
+              p: 2, 
+              mb: 3,
+              background: 'rgba(255, 255, 255, 0.1)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+            }}
+          >
+            <Typography variant="h6" gutterBottom>
+              {t('Your Holdings')}
             </Typography>
-          ) : (
-            <>
-              <List>
-                {coins.map((coin, index) => (
-                  <ListItem 
-                    key={index}
-                    sx={{
-                      mb: 1,
-                      borderRadius: 1,
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      '&:hover': {
-                        background: 'rgba(255, 255, 255, 0.1)'
-                      }
-                    }}
-                  >
-                    <ListItemText
-                      primary={`${coin.name} (${coin.symbol})`}
-                      secondary={`${coin.amount} ${coin.symbol} = ${formatValue(coin.amount * (prices[coin.id]?.eur || 0))}`}
-                    />
-                    <ListItemSecondaryAction>
-                      <IconButton edge="end" onClick={() => handleDeleteCoin(index)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
 
-              <Typography 
-                variant="h6" 
-                sx={{ 
-                  mt: 2, 
-                  textAlign: 'right',
-                  pt: 2,
-                  borderTop: '1px solid rgba(255, 255, 255, 0.1)'
-                }}
-              >
-                {t('Portfolio Value')}: {formatValue(calculateTotalValue())}
+            {loading && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                <CircularProgress size={24} />
+              </Box>
+            )}
+
+            {coins.length === 0 ? (
+              <Typography color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+                {t('No coins added yet')}
               </Typography>
-            </>
-          )}
-        </Paper>
-      </Box>
+            ) : (
+              <>
+                <List>
+                  {coins.map((coin, index) => (
+                    <ListItem 
+                      key={index}
+                      sx={{
+                        mb: 1,
+                        borderRadius: 1,
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        '&:hover': {
+                          background: 'rgba(255, 255, 255, 0.1)'
+                        }
+                      }}
+                    >
+                      <ListItemText
+                        primary={`${coin.name} (${coin.symbol})`}
+                        secondary={`${coin.amount} ${coin.symbol} = ${formatValue(coin.amount * (prices[coin.id]?.eur || 0))}`}
+                      />
+                      <ListItemSecondaryAction>
+                        <IconButton edge="end" onClick={() => handleDeleteCoin(index)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))}
+                </List>
+
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    mt: 2, 
+                    textAlign: 'right',
+                    pt: 2,
+                    borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+                  }}
+                >
+                  {t('Portfolio Value')}: {formatValue(calculateTotalValue())}
+                </Typography>
+              </>
+            )}
+          </Paper>
+        </Grid>
+
+        {/* Wallet Holdings Panel */}
+        <Grid item xs={12}>
+          <WalletHoldings />
+        </Grid>
+      </Grid>
     </Box>
   );
 };

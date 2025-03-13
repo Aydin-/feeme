@@ -115,7 +115,10 @@ export const translations = {
     'Your Holdings': 'Your Holdings',
     'Total Value': 'Total Value',
     switchToDarkMode: 'Switch to Dark Mode',
-    switchToLightMode: 'Switch to Light Mode'
+    switchToLightMode: 'Switch to Light Mode',
+    'Add New Coin': 'Add New Coin',
+    'Select Coin': 'Select Coin',
+    'Wallet Holdings': 'Wallet Holdings'
   },
   no: {
     // Header
@@ -233,6 +236,9 @@ export const translations = {
     'Your Holdings': 'Dine beholdninger',
     'Total Value': 'Total verdi',
     switchToDarkMode: 'Bytt til Mørkt Modus',
-    switchToLightMode: 'Bytt til Lyst Modus'
+    switchToLightMode: 'Bytt til Lyst Modus',
+    'Add New Coin': 'Legg til ny mynt',
+    'Select Coin': 'Velg mynt',
+    'Wallet Holdings': 'Lommebok beholdninger'
   }
 }; 
