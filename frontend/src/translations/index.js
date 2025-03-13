@@ -73,7 +73,7 @@ export const translations = {
     // Footer
     dataProvided: 'Data provided by',
     stayingSovereign: 'stay sovereign',
-    designedBy: 'Designed and developed by Aydin Gungordu',
+    designedBy: 'Designed and developed by AydinTech',
     
     // Wallet descriptions
     walletDescriptions: {
@@ -144,13 +144,24 @@ export const translations = {
     'Receive dedicated support and early access to new features as they become available.': 'Receive dedicated support and early access to new features as they become available.',
     'Bitcoin Inspiration': 'Bitcoin Inspiration',
     'Discover the latest insights, news, and discussions from the Bitcoin community': 'Discover the latest insights, news, and discussions from the Bitcoin community',
+    'Inspiration': 'Inspiration',
     'Tweets': 'Tweets',
     'Articles': 'Articles',
     'Videos': 'Videos',
     'View': 'View',
     'Save for later': 'Save for later',
     'Remove from saved': 'Remove from saved',
-    'Share': 'Share'
+    'Share': 'Share',
+    'Contribute': 'Contribute',
+    'Support the development of this project by contributing ETH or BTC. Your contribution helps maintain and improve the service.': 'Support the development of this project by contributing ETH or BTC. Your contribution helps maintain and improve the service.',
+    'Ethereum Address': 'Ethereum Address',
+    'Bitcoin Address': 'Bitcoin Address',
+    'Copy Address': 'Copy Address',
+    'Show QR Code': 'Show QR Code',
+    'Address copied to clipboard!': 'Address copied to clipboard!',
+    'Ethereum Address QR Code': 'Ethereum Address QR Code',
+    'Bitcoin Address QR Code': 'Bitcoin Address QR Code',
+    'Close': 'Close'
   },
   no: {
     // Header
@@ -226,7 +237,7 @@ export const translations = {
     // Footer
     dataProvided: 'Data levert av',
     stayingSovereign: 'forbli suveren',
-    designedBy: 'Designet og utviklet av Aydin Gungordu',
+    designedBy: 'Designet og utviklet av AydinTech',
     
     // Wallet descriptions
     walletDescriptions: {
@@ -297,12 +308,23 @@ export const translations = {
     'Receive dedicated support and early access to new features as they become available.': 'Motta dedikert støtte og tidlig tilgang til nye funksjoner når de blir tilgjengelige.',
     'Bitcoin Inspiration': 'Bitcoin Inspirasjon',
     'Discover the latest insights, news, and discussions from the Bitcoin community': 'Oppdag de nyeste innsiktene, nyhetene og diskusjonene fra Bitcoin-samfunnet',
+    'Inspiration': 'Inspirasjon',
     'Tweets': 'Tweets',
     'Articles': 'Artikler',
     'Videos': 'Videoer',
     'View': 'Vis',
     'Save for later': 'Lagre for senere',
     'Remove from saved': 'Fjern fra lagrede',
-    'Share': 'Del'
+    'Share': 'Del',
+    'Contribute': 'Bidra',
+    'Support the development of this project by contributing ETH or BTC. Your contribution helps maintain and improve the service.': 'Støtt utviklingen av dette prosjektet ved å bidra med ETH eller BTC. Din bidrag hjelper med å vedlikeholde og forbedre tjenesten.',
+    'Ethereum Address': 'Ethereum-adresse',
+    'Bitcoin Address': 'Bitcoin-adresse',
+    'Copy Address': 'Kopier adresse',
+    'Show QR Code': 'Vis QR-kode',
+    'Address copied to clipboard!': 'Adresse kopiert til utklippstavlen!',
+    'Ethereum Address QR Code': 'Ethereum-adresse QR-kode',
+    'Bitcoin Address QR Code': 'Bitcoin-adresse QR-kode',
+    'Close': 'Lukk'
   }
 }; 

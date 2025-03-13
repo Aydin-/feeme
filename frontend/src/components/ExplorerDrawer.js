@@ -308,7 +308,7 @@ export const ExplorerDrawer = ({ open, onClose }) => {
             </Link>
           </Typography>
           <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.5)', mt: 1 }}>
-            Designed and developed by Aydin Gungordu
+            Designed and developed by AydinTech
           </Typography>
         </Box>
       </Paper>

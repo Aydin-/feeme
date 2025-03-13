@@ -19,6 +19,7 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import StarIcon from '@mui/icons-material/Star';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import MenuIcon from '@mui/icons-material/Menu';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 export function Navigation({ currentPage, onPageChange }) {
   const { t } = useLanguage();
@@ -31,7 +32,8 @@ export function Navigation({ currentPage, onPageChange }) {
     { id: 'portfolio', label: t('Portfolio'), icon: <AccountBalanceWalletIcon /> },
     { id: 'price-history', label: t('Price History'), icon: <TimelineIcon /> },
     { id: 'inspiration', label: t('Inspiration'), icon: <LightbulbIcon /> },
-    { id: 'premium', label: t('Premium'), icon: <StarIcon /> }
+    { id: 'premium', label: t('Premium'), icon: <StarIcon /> },
+    { id: 'contribute', label: t('Contribute'), icon: <FavoriteIcon /> }
   ];
 
   const handleDrawerToggle = () => {

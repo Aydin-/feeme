@@ -7,30 +7,40 @@ export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState('en');
 
   const translate = (key) => {
-    const keys = key.split('.');
-    let translation = translations[language];
-    
-    for (const k of keys) {
-      if (translation && translation[k]) {
-        translation = translation[k];
-      } else {
-        console.warn(`Translation missing for key: ${key}`);
-        return key;
+    try {
+      const keys = key.split('.');
+      let translation = translations[language];
+      
+      for (const k of keys) {
+        if (translation && translation[k]) {
+          translation = translation[k];
+        } else {
+          console.warn(`Translation missing for key: ${key}`);
+          return translations['en'][key] || key; // Fallback to English or key
+        }
       }
+      
+      return translation;
+    } catch (error) {
+      console.error(`Error translating key: ${key}`, error);
+      return key;
     }
-    
-    return translation;
   };
 
   const t = (key, params = {}) => {
-    let translation = translate(key);
-    
-    // Replace parameters in the translation string
-    Object.keys(params).forEach(param => {
-      translation = translation.replace(`{${param}}`, params[param]);
-    });
-    
-    return translation;
+    try {
+      let translation = translate(key);
+      
+      // Replace parameters in the translation string
+      Object.keys(params).forEach(param => {
+        translation = translation.replace(`{${param}}`, params[param]);
+      });
+      
+      return translation;
+    } catch (error) {
+      console.error(`Error processing translation for key: ${key}`, error);
+      return key;
+    }
   };
 
   return (

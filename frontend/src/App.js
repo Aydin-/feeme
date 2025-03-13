@@ -10,6 +10,7 @@ import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Premium } from './components/Premium';
 import { Inspiration } from './components/Inspiration';
+import { Contribute } from './components/Contribute';
 import { useNetworkStatus } from './hooks/useNetworkStatus';
 import { useMempoolStats } from './hooks/useMempoolStats';
 import { useBlockchainInfo } from './hooks/useBlockchainInfo';
@@ -296,6 +297,8 @@ function AppContent() {
               <Premium />
             ) : currentPage === 'inspiration' ? (
               <Inspiration />
+            ) : currentPage === 'contribute' ? (
+              <Contribute />
             ) : (
               <PriceHistory />
             )}
