@@ -16,8 +16,11 @@ import { WALLET_CONFIGS } from './config/walletConfigs';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useTheme } from './contexts/ThemeContext';
+import { PriceHistory } from './components/PriceHistory';
+import { Navigation } from './components/Navigation';
 
 function AppContent() {
+  const [currentPage, setCurrentPage] = useState('fees');
   const [transactionSize, setTransactionSize] = useState(DEFAULT_TX_SIZE.toString());
   const [fees, setFees] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -229,59 +232,75 @@ function AppContent() {
         maxWidth="xl" 
         sx={{ 
           px: { 
-            xs: 2,    // 16px padding on mobile
-            sm: 3,    // 24px padding on tablet
-            md: 4,    // 32px padding on desktop
-            lg: 6,    // 48px padding on large screens
-            xl: 8     // 64px padding on extra large screens
+            xs: 2,
+            sm: 3,
+            md: 4,
+            lg: 6,
+            xl: 8
           }
         }}
       >
         <Box sx={{ 
-          maxWidth: '2000px', // Set a reasonable max-width for ultra-wide screens
-          mx: 'auto'          // Center the content
+          maxWidth: '2000px',
+          mx: 'auto',
+          display: 'flex',
+          gap: 4,
+          width: '100%'
         }}>
-          {error && (
-            <Alert severity="error" sx={{ mb: 3 }}>
-              {error}
-            </Alert>
-          )}
+          <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
+          
+          <Box sx={{ 
+            flex: 1,
+            minWidth: 0 // This prevents flex items from overflowing
+          }}>
+            {error && (
+              <Alert severity="error" sx={{ mb: 3 }}>
+                {error}
+              </Alert>
+            )}
 
-          <FeeCalculator
-            transactionSize={transactionSize}
-            onSizeChange={handleSizeChange}
-            selectedWallet={selectedWallet}
-            onWalletSelect={handleWalletSelect}
-            fees={fees}
-            loading={loading}
-            showFiat={showFiat}
-            onFiatToggle={handleFiatToggle}
-            fiatLoading={fiatLoading}
-            convertBtcToFiat={convertBtcToFiat}
-          />
+            {currentPage === 'fees' ? (
+              <>
+                <FeeCalculator
+                  transactionSize={transactionSize}
+                  onSizeChange={handleSizeChange}
+                  selectedWallet={selectedWallet}
+                  onWalletSelect={handleWalletSelect}
+                  fees={fees}
+                  loading={loading}
+                  showFiat={showFiat}
+                  onFiatToggle={handleFiatToggle}
+                  fiatLoading={fiatLoading}
+                  convertBtcToFiat={convertBtcToFiat}
+                />
 
-          <Grid container spacing={4} sx={{ mt: 4, mb: 4 }}>
-            <Grid item xs={12} lg={6}>
-              <NetworkStatus 
-                networkStatus={networkStatus}
-                feeHistory={feeHistory}
-              />
-            </Grid>
-            <Grid item xs={12} lg={6}>
-              <HashratePower />
-            </Grid>
-          </Grid>
+                <Grid container spacing={4} sx={{ mt: 4, mb: 4 }}>
+                  <Grid item xs={12} md={6}>
+                    <NetworkStatus 
+                      networkStatus={networkStatus}
+                      feeHistory={feeHistory}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <HashratePower />
+                  </Grid>
+                </Grid>
 
-          <Grid container spacing={4} sx={{ mb: 4 }}>
-            <Grid item xs={12} md={6}>
-              <MempoolStats mempoolStats={mempoolStats} />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <BlockchainInfo blockchainInfo={blockchainInfo} />
-            </Grid>
-          </Grid>
+                <Grid container spacing={4} sx={{ mb: 4 }}>
+                  <Grid item xs={12} sm={6}>
+                    <MempoolStats mempoolStats={mempoolStats} />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <BlockchainInfo blockchainInfo={blockchainInfo} />
+                  </Grid>
+                </Grid>
+              </>
+            ) : (
+              <PriceHistory />
+            )}
 
-          <Footer />
+            <Footer />
+          </Box>
         </Box>
       </Container>
     </MuiThemeProvider>

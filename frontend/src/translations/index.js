@@ -5,6 +5,10 @@ export const translations = {
     aboutMenu: 'About',
     explorer: 'Explorer',
     
+    // Navigation
+    Fees: 'Fees',
+    'Price History': 'Price History',
+    
     // About dialog
     about: {
       description: 'Bitcoin Fee Estimator is a professional-grade tool designed to help you calculate accurate transaction fees across different wallet implementations. Our estimator provides real-time data from the Bitcoin network and adjusts calculations based on specific wallet fee strategies.',
@@ -108,6 +112,10 @@ export const translations = {
     title: 'Bitcoin Gebyr Kalkulator',
     aboutMenu: 'Om',
     explorer: 'Utforsker',
+    
+    // Navigation
+    Fees: 'Gebyr',
+    'Pris Historie': 'Pris Historie',
     
     // About dialog
     about: {

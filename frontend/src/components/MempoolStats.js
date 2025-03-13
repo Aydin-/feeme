@@ -22,68 +22,68 @@ export const MempoolStats = ({ mempoolStats }) => {
           {t('mempoolStats')}
         </Typography>
         {mempoolStats ? (
-          <Grid container spacing={3} alignItems="center">
-            <Grid item xs={12} md={4}>
+          <Box sx={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}>
+            <Box sx={{ 
+              display: 'flex', 
+              justifyContent: 'center',
+              overflow: 'visible', // Allow glow effects to overflow
+              mb: 4 // Add margin below gauge
+            }}>
+              <AnimatedGauge
+                value={mempoolStats.mempoolSize}
+                maxValue={MAX_MEMPOOL_SIZE}
+                label={t('mempoolCapacity')}
+                unit="MB"
+                color="#f2a900"
+              />
+            </Box>
+            <Box sx={{ 
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              gap: 2,
+              width: '100%'
+            }}>
               <Box sx={{ 
-                display: 'flex', 
-                justifyContent: 'center',
-                overflow: 'visible', // Allow glow effects to overflow
-                ml: 12 // Increased left margin to move gauge right
-              }}>
-                <AnimatedGauge
-                  value={mempoolStats.mempoolSize}
-                  maxValue={MAX_MEMPOOL_SIZE}
-                  label={t('mempoolCapacity')}
-                  unit="MB"
-                  color="#f2a900"
-                />
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={8}>
-              <Box sx={{ 
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                alignItems: 'center'
+                width: '45%'
               }}>
                 <Box sx={{ 
-                  width: '50%',
-                  mb: 2
+                  p: 2, 
+                  bgcolor: 'rgba(255, 255, 255, 0.05)',
+                  borderRadius: 1,
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
                 }}>
-                  <Box sx={{ 
-                    p: 2, 
-                    bgcolor: 'rgba(255, 255, 255, 0.05)',
-                    borderRadius: 1,
-                    border: '1px solid rgba(255, 255, 255, 0.1)'
-                  }}>
-                    <Typography variant="subtitle2" color="rgba(255, 255, 255, 0.7)">
-                      {t('mempoolSize')}
-                    </Typography>
-                    <Typography variant="h5" sx={{ color: '#f2a900', mt: 1 }}>
-                      {formatBytes(mempoolStats.mempoolSize)}
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box sx={{ 
-                  width: '50%'
-                }}>
-                  <Box sx={{ 
-                    p: 2, 
-                    bgcolor: 'rgba(255, 255, 255, 0.05)',
-                    borderRadius: 1,
-                    border: '1px solid rgba(255, 255, 255, 0.1)'
-                  }}>
-                    <Typography variant="subtitle2" color="rgba(255, 255, 255, 0.7)">
-                      {t('pendingTxs')}
-                    </Typography>
-                    <Typography variant="h5" sx={{ color: '#f2a900', mt: 1 }}>
-                      {formatNumber(mempoolStats.mempoolTxs)}
-                    </Typography>
-                  </Box>
+                  <Typography variant="subtitle2" color="rgba(255, 255, 255, 0.7)">
+                    {t('mempoolSize')}
+                  </Typography>
+                  <Typography variant="h5" sx={{ color: '#f2a900', mt: 1 }}>
+                    {formatBytes(mempoolStats.mempoolSize)}
+                  </Typography>
                 </Box>
               </Box>
-            </Grid>
-          </Grid>
+              <Box sx={{ 
+                width: '45%'
+              }}>
+                <Box sx={{ 
+                  p: 2, 
+                  bgcolor: 'rgba(255, 255, 255, 0.05)',
+                  borderRadius: 1,
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                }}>
+                  <Typography variant="subtitle2" color="rgba(255, 255, 255, 0.7)">
+                    {t('pendingTxs')}
+                  </Typography>
+                  <Typography variant="h5" sx={{ color: '#f2a900', mt: 1 }}>
+                    {formatNumber(mempoolStats.mempoolTxs)}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
         ) : (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
             <CircularProgress size={32} />
