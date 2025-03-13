@@ -161,7 +161,28 @@ export const translations = {
     'Address copied to clipboard!': 'Address copied to clipboard!',
     'Ethereum Address QR Code': 'Ethereum Address QR Code',
     'Bitcoin Address QR Code': 'Bitcoin Address QR Code',
-    'Close': 'Close'
+    'Close': 'Close',
+    'Fees': 'Fees',
+    'Portfolio': 'Portfolio',
+    'Price History': 'Price History',
+    'Inspiration': 'Inspiration',
+    'Premium': 'Premium',
+    'Contribute': 'Contribute',
+    'explorer': 'Explorer',
+    'aboutMenu': 'About',
+    'height': 'Height',
+    'time': 'Time',
+    'size': 'Size',
+    'transactions': 'Transactions',
+    'txid': 'Transaction ID',
+    'feeRate': 'Fee Rate',
+    'value': 'Value',
+    'noTransactions': 'No transactions found',
+    'recentBlocks': 'Recent Blocks',
+    'recentTransactions': 'Recent Transactions',
+    'errors': {
+      'failedToLoad': 'Failed to load data'
+    }
   },
   no: {
     // Header
@@ -325,6 +346,27 @@ export const translations = {
     'Address copied to clipboard!': 'Adresse kopiert til utklippstavlen!',
     'Ethereum Address QR Code': 'Ethereum-adresse QR-kode',
     'Bitcoin Address QR Code': 'Bitcoin-adresse QR-kode',
-    'Close': 'Lukk'
+    'Close': 'Lukk',
+    'Fees': 'Gebyrer',
+    'Portfolio': 'Portefølje',
+    'Price History': 'Prishistorikk',
+    'Inspiration': 'Inspirasjon',
+    'Premium': 'Premium',
+    'Contribute': 'Bidra',
+    'explorer': 'Utforsker',
+    'aboutMenu': 'Om',
+    'height': 'Høyde',
+    'time': 'Tid',
+    'size': 'Størrelse',
+    'transactions': 'Transaksjoner',
+    'txid': 'Transaksjons-ID',
+    'feeRate': 'Gebyrrate',
+    'value': 'Verdi',
+    'noTransactions': 'Ingen transaksjoner funnet',
+    'recentBlocks': 'Nylige Blokker',
+    'recentTransactions': 'Nylige Transaksjoner',
+    'errors': {
+      'failedToLoad': 'Kunne ikke laste data'
+    }
   }
 }; 
