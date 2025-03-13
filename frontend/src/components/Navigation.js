@@ -117,7 +117,7 @@ export function Navigation({ currentPage, onPageChange }) {
           sx={{ 
             position: 'fixed',
             right: 16,
-            top: 16,
+            top: 80,
             zIndex: 1200,
             bgcolor: 'background.paper',
             '&:hover': {
