@@ -245,12 +245,14 @@ function AppContent() {
           mx: 'auto',
           display: 'flex',
           gap: 4,
-          width: '100%'
+          width: '100%',
+          position: 'relative'
         }}>
           <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
           <Box sx={{ 
             flex: 1,
-            minWidth: 0 // This prevents flex items from overflowing
+            minWidth: 0, // This prevents flex items from overflowing
+            mt: { xs: 8, md: 0 } // Add top margin on mobile to account for the menu button
           }}>
             {currentPage === 'fees' ? (
               <>
