@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const MEMPOOL_API = 'https://mempool.space/api';
 
@@ -27,6 +28,7 @@ export const ExplorerDrawer = ({ open, onClose }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,7 +59,7 @@ export const ExplorerDrawer = ({ open, onClose }) => {
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        setError('Failed to load data. Please try again later.');
+        setError(t('errors.failedToLoad'));
       } finally {
         setLoading(false);
       }
@@ -140,7 +142,7 @@ export const ExplorerDrawer = ({ open, onClose }) => {
             color: 'rgba(255, 255, 255, 0.95)',
             fontWeight: 500
           }}>
-            Bitcoin Explorer
+            {t('explorer')}
           </Typography>
           <IconButton
             onClick={onClose}
@@ -178,8 +180,8 @@ export const ExplorerDrawer = ({ open, onClose }) => {
             },
           }}
         >
-          <Tab label="Recent Blocks" />
-          <Tab label="Recent Transactions" />
+          <Tab label={t('recentBlocks')} />
+          <Tab label={t('recentTransactions')} />
         </Tabs>
 
         <Box sx={{ flexGrow: 1, overflow: 'auto', p: 3 }}>
@@ -200,10 +202,10 @@ export const ExplorerDrawer = ({ open, onClose }) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>Height</TableCell>
-                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>Time</TableCell>
-                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>Size</TableCell>
-                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>Transactions</TableCell>
+                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>{t('height')}</TableCell>
+                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>{t('time')}</TableCell>
+                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>{t('size')}</TableCell>
+                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>{t('transactions')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -243,10 +245,10 @@ export const ExplorerDrawer = ({ open, onClose }) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>Transaction ID</TableCell>
-                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>Fee Rate</TableCell>
-                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>Amount</TableCell>
-                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>Size</TableCell>
+                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>{t('time')}</TableCell>
+                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>{t('size')}</TableCell>
+                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>{t('feeRate')}</TableCell>
+                    <TableCell width="25%" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>{t('value')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>

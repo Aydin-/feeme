@@ -1,9 +1,12 @@
 import React from 'react';
 import { Box, Typography, Grid, Card } from '@mui/material';
-import { WALLET_CONFIGS, getWalletAdjustmentText } from '../config/walletConfigs';
+import { WALLET_CONFIGS } from '../config/walletConfigs';
 import { WalletIcons } from '../config/walletIcons';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export const WalletSelector = ({ selectedWallet, onWalletSelect }) => {
+  const { t } = useLanguage();
+
   return (
     <Box sx={{ mb: 4 }}>
       <Typography 
@@ -15,7 +18,7 @@ export const WalletSelector = ({ selectedWallet, onWalletSelect }) => {
           fontWeight: 500
         }}
       >
-        Select Your Wallet
+        {t('selectWallet')}
       </Typography>
       <Grid container spacing={2}>
         {Object.entries(WALLET_CONFIGS).map(([key, wallet]) => (
@@ -24,83 +27,71 @@ export const WalletSelector = ({ selectedWallet, onWalletSelect }) => {
               className={`wallet-card ${selectedWallet === key ? 'selected' : ''}`}
               onClick={() => onWalletSelect(key)}
               sx={{
+                p: 2,
                 cursor: 'pointer',
-                p: 1.5,
+                bgcolor: 'rgba(255, 255, 255, 0.05)',
+                border: selectedWallet === key ? '2px solid #f2a900' : '1px solid rgba(255, 255, 255, 0.1)',
+                transition: 'all 0.2s ease-in-out',
                 height: '100%',
-                minHeight: '90px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'all 0.2s ease-in-out',
-                position: 'relative',
-                overflow: 'visible',
-                bgcolor: selectedWallet === key ? 'rgba(242, 169, 0, 0.15)' : 'rgba(255, 255, 255, 0.02)',
-                borderLeft: selectedWallet === key ? '3px solid #f2a900' : '3px solid transparent',
                 '&:hover': {
-                  bgcolor: selectedWallet === key ? 'rgba(242, 169, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                  transform: 'translateY(-2px)',
-                  boxShadow: selectedWallet === key ? 
-                    '0 4px 20px rgba(242, 169, 0, 0.15)' : 
-                    '0 4px 20px rgba(0, 0, 0, 0.2)'
-                },
-                '&:active': {
-                  transform: 'translateY(0)',
+                  bgcolor: 'rgba(255, 255, 255, 0.08)',
+                  border: '2px solid rgba(242, 169, 0, 0.5)',
                 }
               }}
             >
               <Box 
                 sx={{ 
-                  width: '32px', 
-                  height: '32px', 
-                  mb: 1,
-                  opacity: selectedWallet === key ? 1 : 0.7,
-                  transition: 'opacity 0.2s ease-in-out'
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mb: 1
                 }}
               >
                 {WalletIcons[key]}
               </Box>
               <Typography 
-                variant="h6" 
+                variant="subtitle2" 
                 sx={{ 
-                  fontSize: '1rem',
-                  mb: 0.5,
-                  color: selectedWallet === key ? '#f2a900' : 'rgba(255, 255, 255, 0.9)',
-                  fontWeight: selectedWallet === key ? 600 : 500,
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  color: '#f2a900',
+                  fontWeight: 600,
+                  mb: 0.5
                 }}
               >
-                {wallet.name}
+                {key.charAt(0).toUpperCase() + key.slice(1)}
               </Typography>
               <Typography 
                 variant="body2" 
                 sx={{ 
-                  color: selectedWallet === key ? 
-                    'rgba(255, 255, 255, 0.9)' : 
-                    'rgba(255, 255, 255, 0.7)',
-                  lineHeight: 1.3,
-                  fontSize: '0.8rem',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  fontSize: '0.75rem',
+                  lineHeight: 1.2
                 }}
               >
-                {wallet.description}
+                {t(`walletDescriptions.${key}`)}
               </Typography>
             </Card>
           </Grid>
         ))}
       </Grid>
-      <Typography 
-        variant="body2" 
-        sx={{ 
-          mt: 2,
-          textAlign: 'center',
-          color: 'rgba(255, 255, 255, 0.7)',
-          fontSize: '0.9rem',
-          fontStyle: 'italic'
-        }}
-      >
-        {getWalletAdjustmentText(selectedWallet)}
-      </Typography>
+      {selectedWallet && (
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            mt: 2,
+            color: 'text.secondary',
+            textAlign: 'center'
+          }}
+        >
+          {t(`walletAdjustments.${selectedWallet}`)}
+        </Typography>
+      )}
     </Box>
   );
 }; 

@@ -1,10 +1,13 @@
 import React from 'react';
 import { GithubIcon, LinkedInIcon } from '../icons';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export const Footer = () => {
+  const { t } = useLanguage();
+
   return (
     <div className="footer">
-      <p>Designed and developed by Aydin Gungordu • Data provided by mempool.space API • Stay Sovereign</p>
+      <p>{t('designedBy')} • {t('dataProvided')} mempool.space API • {t('stayingSovereign')}</p>
       <div className="social-links">
         <a 
           href="https://github.com/Aydin-" 

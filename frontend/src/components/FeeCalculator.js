@@ -4,6 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { WalletSelector } from './WalletSelector';
 import { DEFAULT_TX_SIZE } from '../config/constants';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export const FeeCalculator = ({
   transactionSize,
@@ -17,6 +18,8 @@ export const FeeCalculator = ({
   fiatLoading,
   convertBtcToFiat
 }) => {
+  const { t } = useLanguage();
+
   const handleIncrement = () => {
     const newValue = parseInt(transactionSize) + 1;
     onSizeChange({ target: { value: newValue.toString() } });
@@ -35,114 +38,52 @@ export const FeeCalculator = ({
   };
 
   return (
-    <Card className="glass-card">
+    <Card className="glass-card" sx={{ mb: 4 }}>
       <CardContent>
         <Typography variant="h6" gutterBottom>
-          Calculate Transaction Fee
+          {t('calculateFee')}
         </Typography>
-        
+
         <WalletSelector 
-          selectedWallet={selectedWallet}
+          selectedWallet={selectedWallet} 
           onWalletSelect={onWalletSelect}
         />
 
-        <Box sx={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          alignItems: 'center',
-          mb: 3
-        }}>
-          <Typography 
-            variant="subtitle2" 
-            sx={{ 
-              mb: 1,
-              color: 'rgba(255, 255, 255, 0.7)'
-            }}
-          >
-            Transaction Size (bytes)
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="subtitle1" gutterBottom>
+            {t('transactionSize')}
           </Typography>
-          
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {t('averageSize', { size: DEFAULT_TX_SIZE })}
+          </Typography>
           <Paper
             sx={{
+              p: '2px 4px',
               display: 'flex',
               alignItems: 'center',
-              width: 'auto',
-              maxWidth: '280px',
-              bgcolor: 'rgba(255, 255, 255, 0.05)',
-              borderRadius: '12px',
-              p: '2px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              '&:hover': {
-                bgcolor: 'rgba(255, 255, 255, 0.08)',
-                border: '1px solid rgba(255, 255, 255, 0.2)'
-              }
+              width: 250,
+              bgcolor: 'rgba(255, 255, 255, 0.05)'
             }}
           >
-            <IconButton 
-              onClick={handleDecrement}
-              sx={{
-                color: 'rgba(255, 255, 255, 0.8)',
-                '&:hover': {
-                  color: '#f2a900',
-                  bgcolor: 'rgba(242, 169, 0, 0.1)'
-                },
-                transition: 'all 0.2s'
-              }}
-            >
+            <IconButton onClick={handleDecrement}>
               <RemoveIcon />
             </IconButton>
-            
             <InputBase
+              sx={{ ml: 1, flex: 1 }}
               value={transactionSize}
               onChange={handleInputChange}
-              inputProps={{
-                min: 0,
-                style: { 
-                  textAlign: 'center',
-                  color: 'rgba(255, 255, 255, 0.9)',
-                  width: '80px',
-                  fontSize: '1.1rem',
-                  fontWeight: '500'
-                }
-              }}
-              sx={{
-                mx: 1,
-                '& input': {
-                  p: '4px 0'
-                }
-              }}
+              inputProps={{ 'aria-label': 'transaction size' }}
             />
-            
-            <IconButton 
-              onClick={handleIncrement}
-              sx={{
-                color: 'rgba(255, 255, 255, 0.8)',
-                '&:hover': {
-                  color: '#f2a900',
-                  bgcolor: 'rgba(242, 169, 0, 0.1)'
-                },
-                transition: 'all 0.2s'
-              }}
-            >
+            <IconButton onClick={handleIncrement}>
               <AddIcon />
             </IconButton>
           </Paper>
-          
-          <Typography 
-            variant="caption" 
-            sx={{ 
-              mt: 1,
-              color: 'rgba(255, 255, 255, 0.5)',
-              fontStyle: 'italic'
-            }}
-          >
-            Average Bitcoin transaction is ~{DEFAULT_TX_SIZE} bytes
-          </Typography>
         </Box>
 
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
             <CircularProgress size={32} />
+            <Typography sx={{ ml: 2 }}>{t('loading')}</Typography>
           </Box>
         ) : fees ? (
           <>
@@ -150,13 +91,16 @@ export const FeeCalculator = ({
               <Grid item xs={12} sm={4}>
                 <div className="fee-display fee-fast">
                   <Typography variant="body2" color="text.secondary">
-                    Fast (10 min)
+                    {t('fast')}
                   </Typography>
                   <Typography variant="h6">{fees.fast} BTC</Typography>
                   {showFiat && (
                     <div className="currency-conversion">
                       {fiatLoading ? (
-                        <CircularProgress size={16} />
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <CircularProgress size={16} />
+                          <Typography variant="caption" sx={{ ml: 1 }}>{t('loading')}</Typography>
+                        </Box>
                       ) : (
                         <>
                           {convertBtcToFiat(fees.fast)?.eur && (
@@ -180,13 +124,16 @@ export const FeeCalculator = ({
               <Grid item xs={12} sm={4}>
                 <div className="fee-display fee-medium">
                   <Typography variant="body2" color="text.secondary">
-                    Medium (30 min)
+                    {t('medium')}
                   </Typography>
                   <Typography variant="h6">{fees.medium} BTC</Typography>
                   {showFiat && (
                     <div className="currency-conversion">
                       {fiatLoading ? (
-                        <CircularProgress size={16} />
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <CircularProgress size={16} />
+                          <Typography variant="caption" sx={{ ml: 1 }}>{t('loading')}</Typography>
+                        </Box>
                       ) : (
                         <>
                           {convertBtcToFiat(fees.medium)?.eur && (
@@ -210,13 +157,16 @@ export const FeeCalculator = ({
               <Grid item xs={12} sm={4}>
                 <div className="fee-display fee-slow">
                   <Typography variant="body2" color="text.secondary">
-                    Slow (1+ hour)
+                    {t('slow')}
                   </Typography>
                   <Typography variant="h6">{fees.slow} BTC</Typography>
                   {showFiat && (
                     <div className="currency-conversion">
                       {fiatLoading ? (
-                        <CircularProgress size={16} />
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <CircularProgress size={16} />
+                          <Typography variant="caption" sx={{ ml: 1 }}>{t('loading')}</Typography>
+                        </Box>
                       ) : (
                         <>
                           {convertBtcToFiat(fees.slow)?.eur && (
@@ -238,13 +188,15 @@ export const FeeCalculator = ({
                 </div>
               </Grid>
             </Grid>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-              <button 
-                className="fiat-toggle-button" 
+            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+              <Typography
+                variant="body2"
+                color="primary"
+                sx={{ cursor: 'pointer' }}
                 onClick={onFiatToggle}
               >
-                {showFiat ? 'Hide Fiat Values' : 'Show Fiat Values'}
-              </button>
+                {showFiat ? t('hideFiat') : t('showFiat')}
+              </Typography>
             </Box>
           </>
         ) : null}

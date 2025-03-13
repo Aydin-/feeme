@@ -13,6 +13,7 @@ import { useMempoolStats } from './hooks/useMempoolStats';
 import { useBlockchainInfo } from './hooks/useBlockchainInfo';
 import { DEFAULT_TX_SIZE, API_BASE_URL } from './config/constants';
 import { WALLET_CONFIGS } from './config/walletConfigs';
+import { LanguageProvider } from './contexts/LanguageContext';
 
 function App() {
   const [transactionSize, setTransactionSize] = useState(DEFAULT_TX_SIZE.toString());
@@ -164,7 +165,7 @@ function App() {
   };
 
   return (
-    <>
+    <LanguageProvider>
       <div className="bg-pattern"></div>
       <Header />
       <Container 
@@ -226,7 +227,7 @@ function App() {
           <Footer />
         </Box>
       </Container>
-    </>
+    </LanguageProvider>
   );
 }
 
