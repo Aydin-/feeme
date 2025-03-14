@@ -83,9 +83,7 @@ export const FeeHistoryChart = ({ feeHistory }) => {
         }
       },
       title: {
-        display: true,
-        text: 'Fee Rate History (Last Hour)',
-        color: 'rgba(255, 255, 255, 0.8)'
+        display: false
       }
     },
     scales: {

@@ -42,7 +42,7 @@ export const translations = {
     fastFee: 'Fast Fee',
     mediumFee: 'Medium Fee',
     slowFee: 'Slow Fee',
-    feeHistory: 'Fee Rate History (Last 15 Minutes)',
+    feeHistory: 'Fee Rate History',
     
     // Hashrate
     networkHashrate: 'Network Hashrate',
@@ -239,7 +239,7 @@ export const translations = {
     fastFee: 'Raskt Gebyr',
     mediumFee: 'Medium Gebyr',
     slowFee: 'Tregt Gebyr',
-    feeHistory: 'Gebyrsats Historikk (Siste 15 Minutter)',
+    feeHistory: 'Gebyrsats Historikk',
     
     // Hashrate
     networkHashrate: 'Nettverks Hashrate',

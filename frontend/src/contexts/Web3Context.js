@@ -37,13 +37,10 @@ export function Web3ContextProvider({ children }) {
           // Get current chain ID
           const chainId = await window.ethereum.request({ method: 'eth_chainId' });
           setChainId(parseInt(chainId, 16));
-        } else {
-          console.log('No Ethereum provider found');
-          setError('No Web3 wallet found');
         }
       } catch (err) {
         console.error('Provider initialization error:', err);
-        setError(err.message);
+        // Don't set error on initial load
       }
     };
 
