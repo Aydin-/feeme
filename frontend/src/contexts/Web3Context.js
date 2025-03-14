@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { BrowserProvider } from 'ethers';
+import { ethers } from 'ethers';
 
 const Web3Context = createContext(null);
 
@@ -19,7 +19,7 @@ export function Web3ContextProvider({ children }) {
 
   useEffect(() => {
     if (window.ethereum) {
-      const provider = new BrowserProvider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
       setProvider(provider);
     }
   }, []);
