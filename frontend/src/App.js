@@ -273,13 +273,16 @@ function AppContent() {
                 />
 
                 <Grid container spacing={4} sx={{ mt: 4, mb: 4 }}>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12}>
                     <NetworkStatus 
                       networkStatus={networkStatus}
                       feeHistory={feeHistory}
                     />
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                </Grid>
+
+                <Grid container spacing={4} sx={{ mb: 4 }}>
+                  <Grid item xs={12}>
                     <HashratePower />
                   </Grid>
                 </Grid>
