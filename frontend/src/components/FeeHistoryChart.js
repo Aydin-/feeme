@@ -84,7 +84,7 @@ export const FeeHistoryChart = ({ feeHistory }) => {
       },
       title: {
         display: true,
-        text: 'Fee Rate History (Last 15 Minutes)',
+        text: 'Fee Rate History (Last Hour)',
         color: 'rgba(255, 255, 255, 0.8)'
       }
     },
@@ -105,7 +105,13 @@ export const FeeHistoryChart = ({ feeHistory }) => {
         }
       },
       x: {
-        ticks: { color: 'rgba(255, 255, 255, 0.6)' },
+        ticks: { 
+          color: 'rgba(255, 255, 255, 0.6)',
+          maxRotation: 45,
+          minRotation: 45,
+          autoSkip: true,
+          maxTicksLimit: 15 // Show 4-minute intervals for better granularity
+        },
         grid: { color: 'rgba(255, 255, 255, 0.1)' }
       }
     }

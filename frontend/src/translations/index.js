@@ -14,7 +14,7 @@ export const translations = {
     
     // About dialog
     about: {
-      description: 'Bitcoin Fee Estimator is a professional-grade tool designed to help you calculate accurate transaction fees across different wallet implementations. Our estimator provides real-time data from the Bitcoin network and adjusts calculations based on specific wallet fee strategies.',
+      description: 'Bitcoin Nomad Fee Estimator is a tool designed to help you calculate accurate transaction fees across different wallet implementations. Our estimator provides real-time data from the Bitcoin network and adjusts calculations based on specific wallet fee strategies.',
       features: `Features:
 • Real-time fee estimates from mempool.space
 • Support for popular wallets including Coinbase, Electrum, BlueWallet, and Exodus
@@ -47,11 +47,12 @@ export const translations = {
     // Hashrate
     networkHashrate: 'Network Hashrate',
     timeOptions: {
-      '1d': '24 Hours',
-      '7d': '7 Days',
-      '30d': '30 Days',
-      '90d': '90 Days',
-      '365d': '1 Year'
+      '1w': '1w',
+      '1m': '1m',
+      '3m': '3m',
+      '1y': '1y',
+      '3y': '3y',
+      'all': 'All'
     },
     
     // Mempool Stats
@@ -239,11 +240,12 @@ export const translations = {
     // Hashrate
     networkHashrate: 'Nettverks Hashrate',
     timeOptions: {
-      '1d': '24 Timer',
-      '7d': '7 Dager',
-      '30d': '30 Dager',
-      '90d': '90 Dager',
-      '365d': '1 År'
+      '1w': '1 Uke',
+      '1m': '1 Måned',
+      '3m': '3 Måneder',
+      '1y': '1 År',
+      '3y': '3 År',
+      'all': 'Alle'
     },
     
     // Mempool Stats

@@ -16,7 +16,7 @@ import { Explorer } from './components/Explorer';
 import { useNetworkStatus } from './hooks/useNetworkStatus';
 import { useMempoolStats } from './hooks/useMempoolStats';
 import { useBlockchainInfo } from './hooks/useBlockchainInfo';
-import { DEFAULT_TX_SIZE, API_BASE_URL } from './config/constants';
+import { DEFAULT_TX_SIZE, API_BASE_URL, HISTORY_POINTS } from './config/constants';
 import { WALLET_CONFIGS } from './config/walletConfigs';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -55,10 +55,11 @@ function AppContent() {
       const timeStr = now.toLocaleTimeString();
 
       setFeeHistory(prev => {
-        const newTimestamps = [...prev.timestamps, timeStr].slice(-60);
-        const newFastFees = [...prev.fastFees, networkStatus.fastestFee].slice(-60);
-        const newMediumFees = [...prev.mediumFees, networkStatus.halfHourFee].slice(-60);
-        const newSlowFees = [...prev.slowFees, networkStatus.hourFee].slice(-60);
+        // Store data points for 1 hour at 15-second intervals
+        const newTimestamps = [...prev.timestamps, timeStr].slice(-HISTORY_POINTS);
+        const newFastFees = [...prev.fastFees, networkStatus.fastestFee].slice(-HISTORY_POINTS);
+        const newMediumFees = [...prev.mediumFees, networkStatus.halfHourFee].slice(-HISTORY_POINTS);
+        const newSlowFees = [...prev.slowFees, networkStatus.hourFee].slice(-HISTORY_POINTS);
 
         return {
           timestamps: newTimestamps,
