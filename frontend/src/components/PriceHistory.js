@@ -1,15 +1,34 @@
-import React, { useState } from 'react';
-import { Card, CardContent, Typography, Box, CircularProgress, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import React, { useState, useMemo } from 'react';
+import { Card, CardContent, Typography, Box, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTranslation } from 'react-i18next';
 import { usePriceHistory } from '../hooks/usePriceHistory';
+import { formatPrice, formatDate } from '../utils/formatters';
 
-export const PriceHistory = () => {
-  const [timespan, setTimespan] = useState('365d');
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const PriceHistory = () => {
+  const { t } = useTranslation();
+  const [timespan, setTimespan] = useState('1y');
   const { timestamps, prices, loading, error } = usePriceHistory(timespan);
-  const { t } = useLanguage();
-  const { isDarkMode } = useTheme();
 
   const handleTimespanChange = (event, newTimespan) => {
     if (newTimespan !== null) {
@@ -17,156 +36,151 @@ export const PriceHistory = () => {
     }
   };
 
-  const chartData = {
-    labels: timestamps.map(t => t.toLocaleDateString()),
-    datasets: [
-      {
-        label: t('BTC Price'),
-        data: prices,
-        borderColor: '#f2a900',
-        backgroundColor: 'rgba(242, 169, 0, 0.15)',
-        fill: true,
-        tension: 0.4,
-        borderWidth: 3,
-        pointRadius: 0,
-        pointHoverRadius: 6,
-        pointHoverBackgroundColor: '#f2a900',
-        pointHoverBorderColor: '#fff',
-        pointHoverBorderWidth: 2,
-        pointHoverHitRadius: 10,
-        shadowColor: 'rgba(242, 169, 0, 0.3)',
-        shadowBlur: 10,
-        shadowOffsetX: 0,
-        shadowOffsetY: 4
-      }
-    ]
-  };
+  const chartData = useMemo(() => {
+    if (!timestamps.length || !prices.length) return null;
 
-  const chartOptions = {
+    const formatLabel = (timestamp) => {
+      const date = new Date(timestamp);
+      switch (timespan) {
+        case '1w':
+          return formatDate(date, 'HH:mm');
+        case '1m':
+          return formatDate(date, 'MMM D');
+        case '3m':
+          return formatDate(date, 'MMM D');
+        case '1y':
+          return formatDate(date, 'MMM YYYY');
+        case '3y':
+          return formatDate(date, 'MMM YYYY');
+        case 'all':
+          return formatDate(date, 'YYYY');
+        default:
+          return formatDate(date, 'MMM D');
+      }
+    };
+
+    return {
+      labels: timestamps.map(formatLabel),
+      datasets: [
+        {
+          label: t('price.bitcoinPrice'),
+          data: prices,
+          fill: false,
+          borderColor: '#f7931a',
+          tension: 0.1,
+          pointRadius: 0,
+          borderWidth: 2,
+        },
+      ],
+    };
+  }, [timestamps, prices, timespan, t]);
+
+  const chartOptions = useMemo(() => ({
     responsive: true,
     maintainAspectRatio: false,
-    animation: {
-      duration: 1000,
-      easing: 'easeInOutQuart'
+    interaction: {
+      intersect: false,
+      mode: 'index',
     },
     plugins: {
-      legend: {
-        display: false
-      },
       tooltip: {
-        backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-        titleColor: isDarkMode ? '#fff' : '#000',
-        bodyColor: isDarkMode ? '#fff' : '#000',
-        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-        borderWidth: 1,
-        padding: 12,
-        displayColors: false,
+        enabled: true,
+        mode: 'index',
+        intersect: false,
         callbacks: {
-          label: function(context) {
-            return `$${context.raw.toLocaleString()}`;
-          }
+          title: (context) => {
+            if (context[0]) {
+              const date = new Date(timestamps[context[0].dataIndex]);
+              switch (timespan) {
+                case '1w':
+                  return formatDate(date, 'MMM D, YYYY HH:mm');
+                case '1m':
+                case '3m':
+                  return formatDate(date, 'MMM D, YYYY');
+                case '1y':
+                case '3y':
+                case 'all':
+                  return formatDate(date, 'MMM YYYY');
+                default:
+                  return formatDate(date, 'MMM D, YYYY');
+              }
+            }
+            return '';
+          },
+          label: (context) => {
+            return `${t('price.bitcoinPrice')}: $${formatPrice(context.raw)}`;
+          },
         },
-        boxPadding: 6,
-        usePointStyle: true,
-        pointStyle: 'circle'
-      }
+      },
+      legend: {
+        display: false,
+      },
     },
     scales: {
       x: {
         grid: {
-          color: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-          drawBorder: false
+          display: false,
         },
         ticks: {
-          color: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-          maxRotation: 45,
-          minRotation: 45,
-          font: {
-            size: 11
-          },
-          padding: 8,
-          maxTicksLimit: timespan === '1d' ? 12 : 8,
-          callback: function(value, index, values) {
-            if (timespan === '1d') {
-              return new Date(timestamps[index]).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            }
-            return new Date(timestamps[index]).toLocaleDateString();
-          }
-        }
+          maxTicksLimit: timespan === '1w' ? 6 : timespan === '1m' ? 10 : 8,
+          maxRotation: 0,
+          autoSkip: true,
+        },
       },
       y: {
+        position: 'right',
         grid: {
-          color: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-          drawBorder: false
+          color: 'rgba(0, 0, 0, 0.1)',
         },
         ticks: {
-          color: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-          callback: value => `$${value.toLocaleString()}`,
-          font: {
-            size: 11
-          },
-          padding: 8,
-          maxTicksLimit: 6
-        }
-      }
-    }
-  };
+          callback: (value) => `$${formatPrice(value)}`,
+        },
+      },
+    },
+  }), [timespan, timestamps, t]);
 
   return (
-    <Card className="glass-card" sx={{ height: '600px', display: 'flex', flexDirection: 'column' }}>
-      <CardContent sx={{ p: 4, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h6" sx={{ 
-            background: 'linear-gradient(45deg, #f2a900 30%, #ff8e3c 90%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            fontWeight: 600,
-            fontSize: '1.25rem'
-          }}>
-            {t('BTC Price')}
+    <Card>
+      <CardContent>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h6" component="h2">
+            {t('price.bitcoinPriceHistory')}
           </Typography>
           <ToggleButtonGroup
             value={timespan}
             exclusive
             onChange={handleTimespanChange}
             size="small"
-            sx={{
-              '& .MuiToggleButton-root': {
-                color: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-                borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-                '&.Mui-selected': {
-                  color: '#f2a900',
-                  backgroundColor: 'rgba(242, 169, 0, 0.1)',
-                  boxShadow: '0 0 15px rgba(242, 169, 0, 0.2)',
-                },
-                '&:hover': {
-                  backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
-                },
-              },
-            }}
           >
-            {Object.entries(t('timeOptions')).map(([value, label]) => (
-              <ToggleButton key={value} value={value}>
-                {label}
-              </ToggleButton>
-            ))}
+            <ToggleButton value="1w">{t('timeOptions.1w')}</ToggleButton>
+            <ToggleButton value="1m">{t('timeOptions.1m')}</ToggleButton>
+            <ToggleButton value="3m">{t('timeOptions.3m')}</ToggleButton>
+            <ToggleButton value="1y">{t('timeOptions.1y')}</ToggleButton>
+            <ToggleButton value="3y">{t('timeOptions.3y')}</ToggleButton>
+            <ToggleButton value="all">{t('timeOptions.all')}</ToggleButton>
           </ToggleButtonGroup>
         </Box>
-        <Box sx={{ flexGrow: 1, position: 'relative', height: '500px' }}>
-          {loading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-              <CircularProgress size={32} sx={{ color: '#f2a900' }} />
-              <Typography sx={{ ml: 2 }}>{t('loading')}</Typography>
+        
+        <Box height={400}>
+          {loading && (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+              <Typography>{t('loading')}</Typography>
             </Box>
-          ) : error ? (
-            <Typography color="error" sx={{ textAlign: 'center', py: 3 }}>
-              {t('errors.dataNotAvailable')}
-            </Typography>
-          ) : (
+          )}
+          
+          {error && (
+            <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+              <Typography color="error">{error}</Typography>
+            </Box>
+          )}
+          
+          {!loading && !error && chartData && (
             <Line data={chartData} options={chartOptions} />
           )}
         </Box>
       </CardContent>
     </Card>
   );
-}; 
+};
+
+export default PriceHistory; 

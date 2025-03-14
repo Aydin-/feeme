@@ -21,7 +21,7 @@ import { WALLET_CONFIGS } from './config/walletConfigs';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useTheme } from './contexts/ThemeContext';
-import { PriceHistory } from './components/PriceHistory';
+import PriceHistory from './components/PriceHistory';
 import { Navigation } from './components/Navigation';
 import Portfolio from './components/Portfolio';
 import { Web3ContextProvider } from './contexts/Web3Context';

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
+import './i18n'; // Import i18n configuration
 import App from './App';
 import './styles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';

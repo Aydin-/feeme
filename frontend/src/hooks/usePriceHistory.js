@@ -7,7 +7,7 @@ const COINGECKO_API_URL = 'https://api.coingecko.com/api/v3';
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 const priceCache = new Map();
 
-export const usePriceHistory = (timespan = '365d') => {
+export const usePriceHistory = (timespan = '3y') => {
   const [priceData, setPriceData] = useState({
     timestamps: [],
     prices: [],
@@ -35,12 +35,17 @@ export const usePriceHistory = (timespan = '365d') => {
         
         // Convert timespan to CoinGecko's format
         const days = {
-          '1d': 1,
-          '7d': 7,
-          '30d': 30,
-          '90d': 90,
-          '365d': 365
+          '1w': 7,
+          '1m': 30,
+          '3m': 90,
+          '1y': 365,
+          '3y': 1095,
+          'all': 'max'
         }[timespan];
+
+        if (!days) {
+          throw new Error('Invalid timespan');
+        }
 
         // Make a single API call with the appropriate days parameter
         const response = await axios.get(
@@ -49,7 +54,7 @@ export const usePriceHistory = (timespan = '365d') => {
             params: {
               vs_currency: 'usd',
               days: days,
-              interval: 'daily',
+              interval: timespan === '1w' ? 'hourly' : 'daily',
               precision: 2
             },
             headers: {
@@ -58,7 +63,7 @@ export const usePriceHistory = (timespan = '365d') => {
           }
         );
         
-        if (!response.data || !response.data.prices) {
+        if (!response.data || !response.data.prices || !Array.isArray(response.data.prices)) {
           throw new Error('Invalid data format received');
         }
 
@@ -66,23 +71,24 @@ export const usePriceHistory = (timespan = '365d') => {
         const timestamps = data.map(([timestamp]) => new Date(timestamp));
         const prices = data.map(([, price]) => price);
 
-        // Sample data based on timespan to maintain reasonable number of points
+        // Sample data for longer periods to maintain reasonable number of points
         let sampledTimestamps, sampledPrices;
         
-        if (timespan === '1d') {
-          // 24 points for 24h (1 per hour)
-          const step = Math.max(1, Math.floor(prices.length / 24));
+        if (timespan === '1w') {
+          // For 1 week, show 4-hour intervals (42 points)
+          const step = Math.max(1, Math.floor(prices.length / 42));
           sampledTimestamps = timestamps.filter((_, i) => i % step === 0);
           sampledPrices = prices.filter((_, i) => i % step === 0);
-        } else if (timespan === '7d') {
-          // 84 points for 7 days (12 per day)
-          const step = Math.max(1, Math.floor(prices.length / 84));
+        } else if (timespan === 'all') {
+          // For all time, show weekly data points
+          const step = Math.max(1, Math.floor(prices.length / 200));
           sampledTimestamps = timestamps.filter((_, i) => i % step === 0);
           sampledPrices = prices.filter((_, i) => i % step === 0);
         } else {
-          // For longer periods, use daily data points
-          sampledTimestamps = timestamps;
-          sampledPrices = prices;
+          // For other periods, use daily data points but limit to ~200 points
+          const step = Math.max(1, Math.floor(prices.length / 200));
+          sampledTimestamps = timestamps.filter((_, i) => i % step === 0);
+          sampledPrices = prices.filter((_, i) => i % step === 0);
         }
 
         const newData = {

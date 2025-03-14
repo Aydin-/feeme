@@ -5,7 +5,14 @@ import { translations } from './translations';
 i18n
   .use(initReactI18next)
   .init({
-    resources: translations,
+    resources: {
+      en: {
+        translation: translations.en
+      },
+      no: {
+        translation: translations.no
+      }
+    },
     lng: 'en', // default language
     fallbackLng: 'en',
     interpolation: {

@@ -15,4 +15,35 @@ export const formatHashrate = (hashrate) => {
   if (hashrate === 0) return '0 H/s';
   const i = parseInt(Math.floor(Math.log(hashrate) / Math.log(1000)));
   return Math.round(hashrate / Math.pow(1000, i), 2) + ' ' + sizes[i];
+};
+
+export const formatPrice = (price) => {
+  if (typeof price !== 'number') return '0.00';
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(price);
+};
+
+export const formatDate = (date, format = 'MMM D, YYYY') => {
+  if (!(date instanceof Date)) {
+    date = new Date(date);
+  }
+  
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const pad = (num) => String(num).padStart(2, '0');
+  
+  const formats = {
+    'YYYY': date.getFullYear(),
+    'MMM': months[date.getMonth()],
+    'MM': pad(date.getMonth() + 1),
+    'M': date.getMonth() + 1,
+    'DD': pad(date.getDate()),
+    'D': date.getDate(),
+    'HH': pad(date.getHours()),
+    'mm': pad(date.getMinutes()),
+    'ss': pad(date.getSeconds())
+  };
+  
+  return format.replace(/YYYY|MMM|MM|M|DD|D|HH|mm|ss/g, match => formats[match]);
 }; 

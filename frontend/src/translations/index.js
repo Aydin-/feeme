@@ -47,11 +47,11 @@ export const translations = {
     // Hashrate
     networkHashrate: 'Network Hashrate',
     timeOptions: {
-      '1w': '1w',
-      '1m': '1m',
-      '3m': '3m',
-      '1y': '1y',
-      '3y': '3y',
+      '1w': '1W',
+      '1m': '1M',
+      '3m': '3M',
+      '1y': '1Y',
+      '3y': '3Y',
       'all': 'All'
     },
     
@@ -190,6 +190,10 @@ export const translations = {
     'recentTransactions': 'Recent Transactions',
     'errors': {
       'failedToLoad': 'Failed to load data'
+    },
+    price: {
+      bitcoinPrice: 'Bitcoin Price',
+      bitcoinPriceHistory: 'Bitcoin Price History'
     }
   },
   no: {
@@ -240,11 +244,11 @@ export const translations = {
     // Hashrate
     networkHashrate: 'Nettverks Hashrate',
     timeOptions: {
-      '1w': '1 Uke',
-      '1m': '1 Måned',
-      '3m': '3 Måneder',
-      '1y': '1 År',
-      '3y': '3 År',
+      '1w': '1U',
+      '1m': '1M',
+      '3m': '3M',
+      '1y': '1Å',
+      '3y': '3Å',
       'all': 'Alle'
     },
     
@@ -383,6 +387,10 @@ export const translations = {
     'recentTransactions': 'Nylige Transaksjoner',
     'errors': {
       'failedToLoad': 'Kunne ikke laste data'
+    },
+    price: {
+      bitcoinPrice: 'Bitcoin Pris',
+      bitcoinPriceHistory: 'Bitcoin Prishistorikk'
     }
   }
 }; 
