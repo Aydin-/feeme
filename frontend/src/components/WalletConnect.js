@@ -4,7 +4,7 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { useWeb3 } from '../contexts/Web3Context';
 
 const WalletConnect = () => {
-  const { account, connect, disconnect, active, error, isConnecting, chainId } = useWeb3();
+  const { account, connect, disconnect, error, isConnecting, chainId } = useWeb3();
   const [showError, setShowError] = React.useState(false);
   const [showSuccess, setShowSuccess] = React.useState(false);
 
@@ -15,10 +15,10 @@ const WalletConnect = () => {
   }, [error]);
 
   React.useEffect(() => {
-    if (active) {
+    if (account) {
       setShowSuccess(true);
     }
-  }, [active]);
+  }, [account]);
 
   const handleCloseError = () => {
     setShowError(false);
@@ -38,6 +38,7 @@ const WalletConnect = () => {
       await connect();
     } catch (err) {
       console.error('Connection error:', err);
+      setShowError(true);
     }
   };
 
@@ -56,7 +57,7 @@ const WalletConnect = () => {
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-      {active ? (
+      {account ? (
         <Tooltip title={`Connected to ${getNetworkName(chainId)}`}>
           <Button
             variant="outlined"
