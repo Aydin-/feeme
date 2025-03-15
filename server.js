@@ -11,6 +11,51 @@ app.use(express.json());
 
 const MEMPOOL_API = 'https://mempool.space/api';
 
+// Cache for historical fees data
+let historicalFeesCache = {
+  data: null,
+  lastUpdated: null
+};
+
+// Cache duration in milliseconds (10 minutes)
+const CACHE_DURATION = 10 * 60 * 1000;
+
+// Endpoint to get historical fees
+app.get('/api/v1/fees/historical', async (req, res) => {
+  try {
+    const now = Date.now();
+    
+    // Return cached data if it's still valid
+    if (historicalFeesCache.data && historicalFeesCache.lastUpdated && 
+        (now - historicalFeesCache.lastUpdated) < CACHE_DURATION) {
+      return res.json(historicalFeesCache.data);
+    }
+
+    // Fetch new data from mempool.space
+    const response = await axios.get(`${MEMPOOL_API}/v1/fees/mempool-blocks`);
+    
+    // Process and structure the data
+    const processedData = response.data.map(block => ({
+      timestamp: block.timestamp,
+      medianFee: block.medianFee,
+      minFee: block.minFee,
+      maxFee: block.maxFee,
+      feeRange: block.feeRange,
+    }));
+
+    // Update cache
+    historicalFeesCache = {
+      data: processedData,
+      lastUpdated: now
+    };
+
+    res.json(processedData);
+  } catch (error) {
+    console.error('Error fetching historical fees:', error);
+    res.status(500).json({ error: 'Failed to fetch historical fees data' });
+  }
+});
+
 // Endpoint to get current network fees
 app.get('/api/fees', async (req, res) => {
   try {

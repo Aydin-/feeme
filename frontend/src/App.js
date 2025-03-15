@@ -13,6 +13,7 @@ import { Inspiration } from './components/Inspiration';
 import { Contribute } from './components/Contribute';
 import { About } from './components/About';
 import { Explorer } from './components/Explorer';
+import { HistoricalFees } from './components/HistoricalFees';
 import { useNetworkStatus } from './hooks/useNetworkStatus';
 import { useMempoolStats } from './hooks/useMempoolStats';
 import { useBlockchainInfo } from './hooks/useBlockchainInfo';
@@ -279,6 +280,12 @@ function AppContent() {
                       networkStatus={networkStatus}
                       feeHistory={feeHistory}
                     />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={4} sx={{ mb: 4 }}>
+                  <Grid item xs={12}>
+                    <HistoricalFees />
                   </Grid>
                 </Grid>
 
