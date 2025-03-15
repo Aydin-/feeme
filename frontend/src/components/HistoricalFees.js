@@ -42,15 +42,15 @@ export const HistoricalFees = () => {
     const date = new Date(timestamp * 1000);
     switch (timespan) {
       case '24h':
-        return date.toLocaleTimeString();
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       case '3d':
       case '1w':
-        return `${date.getMonth() + 1}/${date.getDate()} ${date.toLocaleTimeString()}`;
+        return date.toLocaleDateString([], { month: 'numeric', day: 'numeric', hour: '2-digit' });
       case '1m':
       case '3m':
-        return date.toLocaleDateString();
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
       case '1y':
-        return date.toLocaleDateString(undefined, { month: 'short', year: 'numeric' });
+        return date.toLocaleDateString([], { month: 'short', year: 'numeric' });
       default:
         return date.toLocaleTimeString();
     }
@@ -66,6 +66,8 @@ export const HistoricalFees = () => {
         backgroundColor: 'rgba(0, 200, 83, 0.1)',
         fill: true,
         tension: 0.4,
+        pointRadius: 0,
+        borderWidth: 2,
       },
       {
         label: t('medianFee'),
@@ -74,6 +76,8 @@ export const HistoricalFees = () => {
         backgroundColor: 'rgba(255, 214, 0, 0.1)',
         fill: true,
         tension: 0.4,
+        pointRadius: 0,
+        borderWidth: 2,
       },
       {
         label: t('slowFee'),
@@ -82,6 +86,8 @@ export const HistoricalFees = () => {
         backgroundColor: 'rgba(255, 61, 0, 0.1)',
         fill: true,
         tension: 0.4,
+        pointRadius: 0,
+        borderWidth: 2,
       },
     ],
   };
@@ -110,7 +116,19 @@ export const HistoricalFees = () => {
         titleColor: '#fff',
         bodyColor: '#fff',
         borderColor: 'rgba(255, 255, 255, 0.1)',
-        borderWidth: 1
+        borderWidth: 1,
+        callbacks: {
+          title: (context) => {
+            if (context[0]) {
+              const date = new Date(data[context[0].dataIndex].timestamp * 1000);
+              return date.toLocaleString();
+            }
+            return '';
+          },
+          label: (context) => {
+            return `${context.dataset.label}: ${context.raw} sats/vB`;
+          }
+        }
       }
     },
     scales: {
@@ -132,6 +150,7 @@ export const HistoricalFees = () => {
         },
         ticks: {
           color: 'rgba(255, 255, 255, 0.7)',
+          callback: (value) => `${value} sats/vB`
         },
         title: {
           display: true,
@@ -192,6 +211,12 @@ export const HistoricalFees = () => {
         ) : loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
             <CircularProgress size={32} sx={{ color: '#f2a900' }} />
+          </Box>
+        ) : data.length === 0 ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+            <Typography color="text.secondary">
+              {t('noDataAvailable')}
+            </Typography>
           </Box>
         ) : (
           <Box sx={{ height: 400 }}>
