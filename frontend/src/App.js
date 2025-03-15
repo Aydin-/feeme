@@ -14,6 +14,7 @@ import { Contribute } from './components/Contribute';
 import { About } from './components/About';
 import { Explorer } from './components/Explorer';
 import { HistoricalFees } from './components/HistoricalFees';
+import { ApiDocs } from './components/ApiDocs';
 import { useNetworkStatus } from './hooks/useNetworkStatus';
 import { useMempoolStats } from './hooks/useMempoolStats';
 import { useBlockchainInfo } from './hooks/useBlockchainInfo';
@@ -316,6 +317,8 @@ function AppContent() {
               <About />
             ) : currentPage === 'explorer' ? (
               <Explorer />
+            ) : currentPage === 'api-docs' ? (
+              <ApiDocs />
             ) : (
               <PriceHistory />
             )}

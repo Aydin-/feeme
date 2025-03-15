@@ -1,0 +1,409 @@
+openapi: 3.0.0
+info:
+  title: Bitcoin Nomad API
+  version: 1.0.0
+  description: API for Bitcoin fee calculator and network statistics
+  contact:
+    name: AydinTech
+    url: https://github.com/Aydin-/feeme
+
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+  - url: https://api.bitcoinnomad.com
+    description: Production server
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          type: string
+          description: Additional error details
+
+    HistoricalPrice:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          description: Unix timestamp in milliseconds
+        eur:
+          type: number
+          description: Bitcoin price in EUR
+        usd:
+          type: number
+          description: Bitcoin price in USD
+
+    HistoricalFee:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          description: Unix timestamp in milliseconds
+        height:
+          type: integer
+          description: Block height
+        fastFee:
+          type: number
+          description: Fast fee rate (90th percentile)
+        medianFee:
+          type: number
+          description: Median fee rate (50th percentile)
+        slowFee:
+          type: number
+          description: Slow fee rate (0th percentile)
+
+    RecommendedFees:
+      type: object
+      properties:
+        fastestFee:
+          type: number
+          description: Fastest fee rate in sat/vB
+        halfHourFee:
+          type: number
+          description: Fee rate for 30-minute confirmation in sat/vB
+        hourFee:
+          type: number
+          description: Fee rate for 1-hour confirmation in sat/vB
+
+    MempoolStats:
+      type: object
+      properties:
+        count:
+          type: integer
+          description: Number of transactions in mempool
+        vsize:
+          type: integer
+          description: Total virtual size of mempool in vbytes
+        total_fee:
+          type: number
+          description: Total fees in mempool in BTC
+
+    BlockHeight:
+      type: object
+      properties:
+        height:
+          type: integer
+          description: Current block height
+
+    DifficultyAdjustment:
+      type: object
+      properties:
+        progressPercent:
+          type: number
+          description: Progress towards next difficulty adjustment
+        difficultyChange:
+          type: number
+          description: Estimated difficulty change percentage
+        estimatedRetargetDate:
+          type: integer
+          description: Estimated timestamp of next difficulty adjustment
+
+    HashrateHistory:
+      type: object
+      properties:
+        hashrates:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: integer
+                description: Unix timestamp
+              avgHashrate:
+                type: number
+                description: Average hashrate in EH/s
+
+    RecentBlock:
+      type: object
+      properties:
+        height:
+          type: integer
+          description: Block height
+        hash:
+          type: string
+          description: Block hash
+        timestamp:
+          type: integer
+          description: Block timestamp
+        size:
+          type: integer
+          description: Block size in bytes
+        tx_count:
+          type: integer
+          description: Number of transactions in block
+
+    RecentTransaction:
+      type: object
+      properties:
+        txid:
+          type: string
+          description: Transaction ID
+        fee:
+          type: number
+          description: Transaction fee in BTC
+        size:
+          type: integer
+          description: Transaction size in bytes
+        weight:
+          type: integer
+          description: Transaction weight in WU
+        status:
+          type: string
+          description: Transaction status
+
+    CalculatedFees:
+      type: object
+      properties:
+        fast:
+          type: string
+          description: Fast fee in BTC
+        medium:
+          type: string
+          description: Medium fee in BTC
+        slow:
+          type: string
+          description: Slow fee in BTC
+
+  parameters:
+    TimespanParam:
+      name: timespan
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [24h, 3d, 1w, 1m, 3m, 6m, 1y, 2y, 3y]
+      description: Time span for historical data
+
+    TransactionSizeParam:
+      name: size
+      in: body
+      required: true
+      schema:
+        type: integer
+      description: Transaction size in bytes
+
+paths:
+  /api/v1/price/historical/{timespan}:
+    get:
+      summary: Get historical Bitcoin prices
+      parameters:
+        - $ref: '#/components/parameters/TimespanParam'
+      responses:
+        '200':
+          description: Historical price data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HistoricalPrice'
+        '400':
+          description: Invalid timespan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/fees/historical/{timespan}:
+    get:
+      summary: Get historical fee data
+      parameters:
+        - $ref: '#/components/parameters/TimespanParam'
+      responses:
+        '200':
+          description: Historical fee data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HistoricalFee'
+        '400':
+          description: Invalid timespan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/fees:
+    get:
+      summary: Get current recommended fees
+      responses:
+        '200':
+          description: Current recommended fees
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendedFees'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/mempool:
+    get:
+      summary: Get mempool statistics
+      responses:
+        '200':
+          description: Mempool statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MempoolStats'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/blocks/tip/height:
+    get:
+      summary: Get latest block height
+      responses:
+        '200':
+          description: Current block height
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockHeight'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/difficulty-adjustment:
+    get:
+      summary: Get difficulty adjustment information
+      responses:
+        '200':
+          description: Difficulty adjustment data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DifficultyAdjustment'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/mining/hashrate/{timespan}:
+    get:
+      summary: Get hashrate history
+      parameters:
+        - $ref: '#/components/parameters/TimespanParam'
+      responses:
+        '200':
+          description: Hashrate history data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HashrateHistory'
+        '400':
+          description: Invalid timespan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/blocks:
+    get:
+      summary: Get recent blocks
+      responses:
+        '200':
+          description: Recent blocks data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecentBlock'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/mempool/recent:
+    get:
+      summary: Get recent transactions
+      responses:
+        '200':
+          description: Recent transactions data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecentTransaction'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/calculate-fee:
+    post:
+      summary: Calculate fee for a specific transaction size
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                size:
+                  $ref: '#/components/parameters/TransactionSizeParam'
+      responses:
+        '200':
+          description: Calculated fees
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculatedFees'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+x-footer:
+  github: https://github.com/Aydin-/feeme 

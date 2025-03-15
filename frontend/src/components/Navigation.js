@@ -24,6 +24,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import InfoIcon from '@mui/icons-material/Info';
 import ExploreIcon from '@mui/icons-material/Explore';
+import CodeIcon from '@mui/icons-material/Code';
 
 export function Navigation({ currentPage, onPageChange }) {
   const { t } = useLanguage();
@@ -39,6 +40,7 @@ export function Navigation({ currentPage, onPageChange }) {
     { id: 'premium', label: t('Premium'), icon: <StarIcon /> },
     { id: 'contribute', label: t('Contribute'), icon: <FavoriteIcon /> },
     { id: 'explorer', label: t('explorer'), icon: <ExploreIcon /> },
+    { id: 'api-docs', label: t('API Docs'), icon: <CodeIcon /> },
     { id: 'about', label: t('aboutMenu'), icon: <InfoIcon /> }
   ];
 

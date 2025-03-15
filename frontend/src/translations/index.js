@@ -8,7 +8,8 @@ export const translations = {
     lightMode: 'Light Mode',
     
     // Navigation
-    Fees: 'Fee Calculator',
+    Fees: 'Fees',
+    Portfolio: 'Portfolio',
     'Price History': 'Price History',
     'BTC Price': 'BTC Price',
     
@@ -211,7 +212,8 @@ export const translations = {
       '2y': '2y',
       '3y': '3y'
     },
-    noDataAvailable: 'No data available'
+    noDataAvailable: 'No data available',
+    'API Docs': 'API Docs'
   },
   no: {
     // Header
@@ -222,7 +224,8 @@ export const translations = {
     lightMode: 'Lys Modus',
     
     // Navigation
-    Fees: 'Gebyrkalkulator',
+    Fees: 'Gebyrer',
+    Portfolio: 'Portefølje',
     'Price History': 'Prishistorikk',
     'BTC Price': 'BTC Pris',
     
@@ -425,6 +428,7 @@ export const translations = {
       '2y': '2å',
       '3y': '3å'
     },
-    noDataAvailable: 'Ingen data tilgjengelig'
+    noDataAvailable: 'Ingen data tilgjengelig',
+    'API Docs': 'API Dokumentasjon'
   }
 }; 
