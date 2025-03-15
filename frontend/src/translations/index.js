@@ -194,7 +194,18 @@ export const translations = {
     price: {
       bitcoinPrice: 'Bitcoin Price',
       bitcoinPriceHistory: 'Bitcoin Price History'
-    }
+    },
+    historicalFees: 'Historical Fees',
+    medianFee: 'Medium Fee',
+    timeOptions: {
+      '24h': '24h',
+      '3d': '3d',
+      '1w': '1w',
+      '1m': '1m',
+      '3m': '3m',
+      '1y': '1y'
+    },
+    noDataAvailable: 'No data available'
   },
   no: {
     // Header
@@ -391,6 +402,17 @@ export const translations = {
     price: {
       bitcoinPrice: 'Bitcoin Pris',
       bitcoinPriceHistory: 'Bitcoin Prishistorikk'
-    }
+    },
+    historicalFees: 'Historiske Gebyrer',
+    medianFee: 'Medium Gebyr',
+    timeOptions: {
+      '24h': '24t',
+      '3d': '3d',
+      '1w': '1u',
+      '1m': '1m',
+      '3m': '3m',
+      '1y': '1å'
+    },
+    noDataAvailable: 'Ingen data tilgjengelig'
   }
 }; 
