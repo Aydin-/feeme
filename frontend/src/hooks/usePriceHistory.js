@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-
-const COINGECKO_API_URL = 'https://api.coingecko.com/api/v3';
+import { API_BASE_URL } from '../config/constants';
 
 // Cache configuration
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
 const priceCache = new Map();
 
-export const usePriceHistory = (timespan = '3y') => {
+export const usePriceHistory = (timespan = '1y') => {
   const [priceData, setPriceData] = useState({
     timestamps: [],
     prices: [],
@@ -33,67 +32,26 @@ export const usePriceHistory = (timespan = '3y') => {
 
         setPriceData(prev => ({ ...prev, loading: true, error: null }));
         
-        // Convert timespan to CoinGecko's format
-        const days = {
-          '1w': 7,
-          '1m': 30,
-          '3m': 90,
-          '1y': 365,
-          '3y': 1095,
-          'all': 'max'
-        }[timespan];
-
-        if (!days) {
-          throw new Error('Invalid timespan');
-        }
-
-        // Make a single API call with the appropriate days parameter
-        const response = await axios.get(
-          `${COINGECKO_API_URL}/coins/bitcoin/market_chart`,
-          {
-            params: {
-              vs_currency: 'usd',
-              days: days,
-              interval: timespan === '1w' ? 'hourly' : 'daily',
-              precision: 2
-            },
-            headers: {
-              'Accept': 'application/json'
-            }
-          }
-        );
+        // Fetch data from our backend
+        const response = await axios.get(`${API_BASE_URL}/v1/price/historical/${timespan}`);
         
-        if (!response.data || !response.data.prices || !Array.isArray(response.data.prices)) {
+        if (!response.data || !Array.isArray(response.data)) {
           throw new Error('Invalid data format received');
         }
 
-        const data = response.data.prices;
-        const timestamps = data.map(([timestamp]) => new Date(timestamp));
-        const prices = data.map(([, price]) => price);
+        // Process the data points
+        const data = response.data;
+        const timestamps = data.map(item => item.timestamp);
+        const prices = data.map(item => item.price);
 
-        // Sample data for longer periods to maintain reasonable number of points
-        let sampledTimestamps, sampledPrices;
-        
-        if (timespan === '1w') {
-          // For 1 week, show 4-hour intervals (42 points)
-          const step = Math.max(1, Math.floor(prices.length / 42));
-          sampledTimestamps = timestamps.filter((_, i) => i % step === 0);
-          sampledPrices = prices.filter((_, i) => i % step === 0);
-        } else if (timespan === 'all') {
-          // For all time, show weekly data points
-          const step = Math.max(1, Math.floor(prices.length / 200));
-          sampledTimestamps = timestamps.filter((_, i) => i % step === 0);
-          sampledPrices = prices.filter((_, i) => i % step === 0);
-        } else {
-          // For other periods, use daily data points but limit to ~200 points
-          const step = Math.max(1, Math.floor(prices.length / 200));
-          sampledTimestamps = timestamps.filter((_, i) => i % step === 0);
-          sampledPrices = prices.filter((_, i) => i % step === 0);
+        // Ensure we have valid data
+        if (timestamps.length === 0 || prices.length === 0) {
+          throw new Error('No valid price data received');
         }
 
         const newData = {
-          timestamps: sampledTimestamps,
-          prices: sampledPrices,
+          timestamps,
+          prices,
           loading: false,
           error: null
         };

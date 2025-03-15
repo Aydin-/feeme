@@ -42,18 +42,24 @@ const PriceHistory = () => {
     const formatLabel = (timestamp) => {
       const date = new Date(timestamp);
       switch (timespan) {
-        case '1w':
+        case '24h':
           return formatDate(date, 'HH:mm');
+        case '3d':
+          return formatDate(date, 'MMM D HH:mm');
+        case '1w':
+          return formatDate(date, 'MMM D HH:mm');
         case '1m':
           return formatDate(date, 'MMM D');
         case '3m':
           return formatDate(date, 'MMM D');
+        case '6m':
+          return formatDate(date, 'MMM D');
         case '1y':
+          return formatDate(date, 'MMM YYYY');
+        case '2y':
           return formatDate(date, 'MMM YYYY');
         case '3y':
           return formatDate(date, 'MMM YYYY');
-        case 'all':
-          return formatDate(date, 'YYYY');
         default:
           return formatDate(date, 'MMM D');
       }
@@ -92,14 +98,17 @@ const PriceHistory = () => {
             if (context[0]) {
               const date = new Date(timestamps[context[0].dataIndex]);
               switch (timespan) {
+                case '24h':
+                case '3d':
                 case '1w':
                   return formatDate(date, 'MMM D, YYYY HH:mm');
                 case '1m':
                 case '3m':
+                case '6m':
                   return formatDate(date, 'MMM D, YYYY');
                 case '1y':
+                case '2y':
                 case '3y':
-                case 'all':
                   return formatDate(date, 'MMM YYYY');
                 default:
                   return formatDate(date, 'MMM D, YYYY');
@@ -108,7 +117,7 @@ const PriceHistory = () => {
             return '';
           },
           label: (context) => {
-            return `${t('price.bitcoinPrice')}: $${formatPrice(context.raw)}`;
+            return `${t('price.bitcoinPrice')}: €${formatPrice(context.raw)}`;
           },
         },
       },
@@ -122,7 +131,7 @@ const PriceHistory = () => {
           display: false,
         },
         ticks: {
-          maxTicksLimit: timespan === '1w' ? 6 : timespan === '1m' ? 10 : 8,
+          maxTicksLimit: timespan === '24h' || timespan === '3d' || timespan === '1w' ? 6 : timespan === '1m' ? 10 : 8,
           maxRotation: 0,
           autoSkip: true,
         },
@@ -133,7 +142,7 @@ const PriceHistory = () => {
           color: 'rgba(0, 0, 0, 0.1)',
         },
         ticks: {
-          callback: (value) => `$${formatPrice(value)}`,
+          callback: (value) => `€${formatPrice(value)}`,
         },
       },
     },
@@ -152,12 +161,15 @@ const PriceHistory = () => {
             onChange={handleTimespanChange}
             size="small"
           >
+            <ToggleButton value="24h">{t('timeOptions.24h')}</ToggleButton>
+            <ToggleButton value="3d">{t('timeOptions.3d')}</ToggleButton>
             <ToggleButton value="1w">{t('timeOptions.1w')}</ToggleButton>
             <ToggleButton value="1m">{t('timeOptions.1m')}</ToggleButton>
             <ToggleButton value="3m">{t('timeOptions.3m')}</ToggleButton>
+            <ToggleButton value="6m">{t('timeOptions.6m')}</ToggleButton>
             <ToggleButton value="1y">{t('timeOptions.1y')}</ToggleButton>
+            <ToggleButton value="2y">{t('timeOptions.2y')}</ToggleButton>
             <ToggleButton value="3y">{t('timeOptions.3y')}</ToggleButton>
-            <ToggleButton value="all">{t('timeOptions.all')}</ToggleButton>
           </ToggleButtonGroup>
         </Box>
         

@@ -14,11 +14,111 @@ const MEMPOOL_API = 'https://mempool.space/api';
 // Cache for historical fees data - separate cache for each timespan
 const historicalFeesCache = new Map();
 
+// Cache for historical price data
+const historicalPriceCache = {
+  data: null,
+  timestamp: 0
+};
+
 // Cache duration in milliseconds (10 minutes)
 const CACHE_DURATION = 10 * 60 * 1000;
 
 // Valid timespans for historical fees
 const VALID_TIMESPANS = ['24h', '3d', '1w', '1m', '3m', '6m', '1y', '2y', '3y'];
+
+// Helper function to get timestamp range for a timespan
+function getTimestampRange(timespan) {
+  const now = Date.now();
+  let startTime;
+  
+  switch (timespan) {
+    case '24h':
+      startTime = now - (24 * 60 * 60 * 1000);
+      break;
+    case '3d':
+      startTime = now - (3 * 24 * 60 * 60 * 1000);
+      break;
+    case '1w':
+      startTime = now - (7 * 24 * 60 * 60 * 1000);
+      break;
+    case '1m':
+      startTime = now - (30 * 24 * 60 * 60 * 1000);
+      break;
+    case '3m':
+      startTime = now - (90 * 24 * 60 * 60 * 1000);
+      break;
+    case '6m':
+      startTime = now - (180 * 24 * 60 * 60 * 1000);
+      break;
+    case '1y':
+      startTime = now - (365 * 24 * 60 * 60 * 1000);
+      break;
+    case '2y':
+      startTime = now - (730 * 24 * 60 * 60 * 1000);
+      break;
+    case '3y':
+      startTime = now - (1095 * 24 * 60 * 60 * 1000);
+      break;
+    default:
+      throw new Error('Invalid timespan');
+  }
+  
+  return { startTime, endTime: now };
+}
+
+// Endpoint to get historical Bitcoin prices
+app.get('/api/v1/price/historical/:timespan', async (req, res) => {
+  try {
+    const timespan = req.params.timespan;
+    console.log(`Received request for historical prices with timespan: ${timespan}`);
+    
+    // Validate timespan
+    if (!VALID_TIMESPANS.includes(timespan)) {
+      console.log(`Invalid timespan received: ${timespan}`);
+      return res.status(400).json({ error: 'Invalid timespan' });
+    }
+
+    // Check if we need to fetch new price data
+    let priceData = historicalPriceCache.data;
+    if (!priceData || Date.now() - historicalPriceCache.timestamp > CACHE_DURATION) {
+      console.log('Fetching new historical price data from mempool.space API...');
+      const response = await axios.get(`${MEMPOOL_API}/v1/historical-price?currency=EUR`);
+      priceData = response.data;
+      historicalPriceCache.data = priceData;
+      historicalPriceCache.timestamp = Date.now();
+    }
+
+    // Get timestamp range for the requested timespan
+    const { startTime, endTime } = getTimestampRange(timespan);
+
+    // Filter and format price data for the requested timespan
+    const filteredData = priceData.prices
+      .filter(price => {
+        const timestamp = price.time * 1000; // Convert to milliseconds
+        return timestamp >= startTime && timestamp <= endTime;
+      })
+      .map(price => ({
+        timestamp: price.time * 1000, // Convert to milliseconds for frontend
+        price: price.EUR
+      }))
+      .sort((a, b) => a.timestamp - b.timestamp);
+
+    console.log(`Returning ${filteredData.length} price data points for timespan: ${timespan}`);
+    res.json(filteredData);
+  } catch (error) {
+    console.error('Error fetching historical prices:', {
+      message: error.message,
+      code: error.code,
+      url: error.config?.url,
+      response: error.response?.data,
+      stack: error.stack
+    });
+    res.status(500).json({ 
+      error: 'Failed to fetch historical price data',
+      details: error.message
+    });
+  }
+});
 
 // Endpoint to get historical fees with timespan
 app.get('/api/v1/fees/historical/:timespan', async (req, res) => {
