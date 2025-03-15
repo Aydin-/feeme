@@ -42,7 +42,7 @@ export const translations = {
     fastFee: 'Fast Fee',
     mediumFee: 'Medium Fee',
     slowFee: 'Slow Fee',
-    feeHistory: 'Fee Rate History',
+    feeHistory: 'Real-time Fees (15 second ticker)',
     
     // Hashrate
     networkHashrate: 'Network Hashrate',
