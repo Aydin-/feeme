@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../config/constants';
 
-export const useHistoricalFees = () => {
+export const useHistoricalFees = (timespan = '24h') => {
   const [historicalFees, setHistoricalFees] = useState({
     data: [],
     loading: true,
@@ -12,7 +12,7 @@ export const useHistoricalFees = () => {
   const fetchHistoricalFees = async () => {
     try {
       setHistoricalFees(prev => ({ ...prev, loading: true, error: null }));
-      const response = await axios.get(`${API_BASE_URL}/v1/fees/historical`);
+      const response = await axios.get(`${API_BASE_URL}/v1/fees/historical/${timespan}`);
       
       setHistoricalFees({
         data: response.data,
@@ -34,7 +34,7 @@ export const useHistoricalFees = () => {
     // Update every 10 minutes
     const timer = setInterval(fetchHistoricalFees, 10 * 60 * 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [timespan]); // Add timespan as dependency
 
   return historicalFees;
 }; 
