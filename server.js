@@ -18,7 +18,7 @@ const historicalFeesCache = new Map();
 const CACHE_DURATION = 10 * 60 * 1000;
 
 // Valid timespans for historical fees
-const VALID_TIMESPANS = ['24h', '3d', '1w', '1m', '3m', '1y'];
+const VALID_TIMESPANS = ['24h', '3d', '1w', '1m', '3m', '6m', '1y', '2y', '3y'];
 
 // Endpoint to get historical fees with timespan
 app.get('/api/v1/fees/historical/:timespan', async (req, res) => {
@@ -26,9 +26,8 @@ app.get('/api/v1/fees/historical/:timespan', async (req, res) => {
     const timespan = req.params.timespan;
     console.log(`Received request for historical fees with timespan: ${timespan}`);
     
-    const validTimespans = ['24h', '3d', '1w', '1m', '3m', '1y'];
-    
-    if (!validTimespans.includes(timespan)) {
+    // Validate timespan
+    if (!VALID_TIMESPANS.includes(timespan)) {
       console.log(`Invalid timespan received: ${timespan}`);
       return res.status(400).json({ error: 'Invalid timespan' });
     }
@@ -36,86 +35,81 @@ app.get('/api/v1/fees/historical/:timespan', async (req, res) => {
     // Check cache first
     const cacheKey = `historical_fees_${timespan}`;
     const cachedData = historicalFeesCache.get(cacheKey);
-    if (cachedData && Date.now() - cachedData.timestamp < 5 * 60 * 1000) {
+    if (cachedData && Date.now() - cachedData.timestamp < CACHE_DURATION) {
       console.log(`Returning cached data for timespan: ${timespan}`);
       return res.json(cachedData.data);
     }
 
-    console.log(`Fetching current fees from mempool.space API...`);
-    // Fetch current fees to use as baseline
-    const response = await axios.get(`${MEMPOOL_API}/v1/fees/recommended`);
-    const currentFees = response.data;
-    console.log(`Received current fees:`, currentFees);
-
-    // Calculate number of data points and interval based on timespan
-    let numPoints, interval;
-    switch (timespan) {
-      case '24h':
-        numPoints = 24; // One point per hour
-        interval = 3600; // 1 hour in seconds
-        break;
-      case '3d':
-        numPoints = 72; // One point per hour
-        interval = 3600;
-        break;
-      case '1w':
-        numPoints = 168; // One point per hour
-        interval = 3600;
-        break;
-      case '1m':
-        numPoints = 30; // One point per day
-        interval = 86400;
-        break;
-      case '3m':
-        numPoints = 90; // One point per day
-        interval = 86400;
-        break;
-      case '1y':
-        numPoints = 365; // One point per day
-        interval = 86400;
-        break;
-      default:
-        numPoints = 24;
-        interval = 3600;
-    }
-
-    console.log(`Generating ${numPoints} data points with interval ${interval} seconds`);
-
-    // Generate historical data points
-    const now = Math.floor(Date.now() / 1000);
-    const dataPoints = [];
-
-    for (let i = 0; i < numPoints; i++) {
-      const timestamp = now - (i * interval);
-      
-      // Add some random variation to make it more interesting
-      const fastMultiplier = 0.85 + Math.random() * 0.3; // 0.85 to 1.15
-      const medianMultiplier = 0.85 + Math.random() * 0.3;
-      const slowMultiplier = 0.85 + Math.random() * 0.3;
-
-      let fastFee = Math.floor(currentFees.fastestFee * fastMultiplier);
-      let medianFee = Math.floor(currentFees.halfHourFee * medianMultiplier);
-      let slowFee = Math.floor(currentFees.hourFee * slowMultiplier);
-
-      // Ensure proper fee relationships
-      fastFee = Math.max(fastFee, medianFee + 1);
-      medianFee = Math.max(medianFee, slowFee + 1);
-      slowFee = Math.max(slowFee, 1);
-
-      dataPoints.push({
-        timestamp,
-        fastFee,
-        medianFee,
-        slowFee
+    console.log(`Fetching historical fees from mempool.space API...`);
+    
+    // Get current recommended fees
+    console.log('Fetching current recommended fees...');
+    const currentFeesResponse = await axios.get(`${MEMPOOL_API}/v1/fees/recommended`);
+    console.log('Current recommended fees response:', JSON.stringify(currentFeesResponse.data, null, 2));
+    const currentFees = currentFeesResponse.data;
+    
+    // Get historical fee data based on timespan
+    console.log(`Fetching historical fees data for timespan: ${timespan}`);
+    const url = `${MEMPOOL_API}/v1/mining/blocks/fee-rates/${timespan}`;
+    console.log('Requesting URL:', url);
+    let historicalData;
+    try {
+      historicalData = await axios.get(url);
+      console.log('Historical fees response status:', historicalData.status);
+      console.log('Historical fees response headers:', historicalData.headers);
+      console.log('Historical fees response:', JSON.stringify(historicalData.data, null, 2));
+    } catch (error) {
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        url: error.config?.url,
+        method: error.config?.method,
+        headers: error.config?.headers,
+        response: error.response?.data,
+        status: error.response?.status,
+        statusText: error.response?.statusText
       });
+      throw error;
     }
 
-    // Sort by timestamp in descending order
-    dataPoints.sort((a, b) => b.timestamp - a.timestamp);
+    if (!historicalData?.data || !Array.isArray(historicalData.data)) {
+      console.log('No valid historical fee data received');
+      return res.status(500).json({ error: 'No valid fee data available' });
+    }
 
-    console.log(`Generated ${dataPoints.length} data points`);
-    console.log(`First data point:`, dataPoints[0]);
-    console.log(`Last data point:`, dataPoints[dataPoints.length - 1]);
+    // Process historical fee data for charting
+    const dataPoints = historicalData.data.map(feeData => {
+      // Convert timestamp to milliseconds and ensure it's a number
+      const timestamp = parseInt(feeData.timestamp) * 1000;
+      
+      return {
+        timestamp,
+        height: feeData.avgHeight,
+        fastFee: feeData.avgFee_90,     // Maximum fee rate (fastest)
+        medianFee: feeData.avgFee_50,  // Median (50th percentile)
+        slowFee: feeData.avgFee_0    // Minimum fee rate (slowest)
+      };
+    });
+
+    // Sort by timestamp in ascending order for charting
+    dataPoints.sort((a, b) => a.timestamp - b.timestamp);
+
+    // Ensure we have enough data points for the timespan
+    if (dataPoints.length === 0) {
+      console.log('No valid data points after processing');
+      return res.status(500).json({ error: 'No valid fee data available' });
+    }
+
+    // Log the structure of the first few data points
+    console.log('Data structure being sent to frontend:');
+    console.log('First 3 data points:', JSON.stringify(dataPoints.slice(0, 3), null, 2));
+    console.log('Data point structure:', Object.keys(dataPoints[0]));
+    console.log('Sample values:', {
+      timestamp: dataPoints[0].timestamp,
+      fastFee: dataPoints[0].fastFee,
+      medianFee: dataPoints[0].medianFee,
+      slowFee: dataPoints[0].slowFee
+    });
 
     // Update cache
     historicalFeesCache.set(cacheKey, {
@@ -129,7 +123,8 @@ app.get('/api/v1/fees/historical/:timespan', async (req, res) => {
       message: error.message,
       code: error.code,
       url: error.config?.url,
-      response: error.response?.data
+      response: error.response?.data,
+      stack: error.stack
     });
     res.status(500).json({ 
       error: 'Failed to fetch historical fees data',
