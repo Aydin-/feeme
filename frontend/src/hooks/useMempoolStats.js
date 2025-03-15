@@ -13,14 +13,15 @@ export const useMempoolStats = () => {
   const fetchMempoolStats = async () => {
     try {
       const mempoolResponse = await axios.get(`${MEMPOOL_API_URL}/mempool`);
+      const data = mempoolResponse.data;
       
       setMempoolStats(prev => ({
         ...prev,
-        mempoolSize: mempoolResponse.data.vsize || prev.mempoolSize,
-        mempoolTxs: mempoolResponse.data.count || prev.mempoolTxs,
-        totalFees: mempoolResponse.data.total_fee || prev.totalFees,
-        medianFee: mempoolResponse.data.vsize > 0 ? 
-          Math.round((mempoolResponse.data.total_fee / mempoolResponse.data.vsize) * 100) / 100 : prev.medianFee
+        mempoolSize: data.vsize || 0,
+        mempoolTxs: data.count || 0,
+        totalFees: data.total_fee || 0,
+        medianFee: data.vsize > 0 ? 
+          Math.round((data.total_fee / data.vsize) * 100) / 100 : 0
       }));
     } catch (err) {
       console.error('Failed to fetch mempool stats:', err);

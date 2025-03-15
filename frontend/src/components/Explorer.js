@@ -15,8 +15,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useLanguage } from '../contexts/LanguageContext';
-
-const MEMPOOL_API = 'https://mempool.space/api';
+import { API_BASE_URL } from '../config/constants';
 
 export function Explorer() {
   const [blocks, setBlocks] = useState([]);
@@ -32,16 +31,8 @@ export function Explorer() {
       
       try {
         const [blocksResponse, txResponse] = await Promise.all([
-          axios.get(`${MEMPOOL_API}/v1/blocks`, {
-            headers: {
-              'Accept': 'application/json',
-            }
-          }),
-          axios.get(`${MEMPOOL_API}/mempool/recent`, {
-            headers: {
-              'Accept': 'application/json',
-            }
-          })
+          axios.get(`${API_BASE_URL}/v1/blocks`),
+          axios.get(`${API_BASE_URL}/mempool/recent`)
         ]);
 
         if (blocksResponse.data) {
