@@ -47,12 +47,15 @@ export const translations = {
     // Hashrate
     networkHashrate: 'Network Hashrate',
     timeOptions: {
-      '1w': '1W',
-      '1m': '1M',
-      '3m': '3M',
-      '1y': '1Y',
-      '3y': '3Y',
-      'all': 'All'
+      '24h': '24h',
+      '3d': '3d',
+      '1w': '1w',
+      '1m': '1m',
+      '3m': '3m',
+      '6m': '6m',
+      '1y': '1y',
+      '2y': '2y',
+      '3y': '3y'
     },
     
     // Mempool Stats
@@ -203,7 +206,10 @@ export const translations = {
       '1w': '1w',
       '1m': '1m',
       '3m': '3m',
-      '1y': '1y'
+      '6m': '6m',
+      '1y': '1y',
+      '2y': '2y',
+      '3y': '3y'
     },
     noDataAvailable: 'No data available'
   },
@@ -255,12 +261,15 @@ export const translations = {
     // Hashrate
     networkHashrate: 'Nettverks Hashrate',
     timeOptions: {
-      '1w': '1U',
-      '1m': '1M',
-      '3m': '3M',
-      '1y': '1Å',
-      '3y': '3Å',
-      'all': 'Alle'
+      '24h': '24h',
+      '3d': '3d',
+      '1w': '1u',
+      '1m': '1m',
+      '3m': '3m',
+      '6m': '6m',
+      '1y': '1å',
+      '2y': '2å',
+      '3y': '3å'
     },
     
     // Mempool Stats
@@ -406,12 +415,15 @@ export const translations = {
     historicalFees: 'Historiske Gebyrer',
     medianFee: 'Medium Gebyr',
     timeOptions: {
-      '24h': '24t',
+      '24h': '24h',
       '3d': '3d',
       '1w': '1u',
       '1m': '1m',
       '3m': '3m',
-      '1y': '1å'
+      '6m': '6m',
+      '1y': '1å',
+      '2y': '2å',
+      '3y': '3å'
     },
     noDataAvailable: 'Ingen data tilgjengelig'
   }
