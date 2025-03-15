@@ -5,7 +5,7 @@ info:
   description: API for Bitcoin fee calculator and network statistics
   contact:
     name: AydinTech
-    url: https://aydintech.com
+    url: https://github.com/Aydin-/feeme
 
 servers:
   - url: http://localhost:5000
@@ -403,4 +403,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error' 
+                $ref: '#/components/schemas/Error'
+
+x-footer:
+  github: https://github.com/Aydin-/feeme 
